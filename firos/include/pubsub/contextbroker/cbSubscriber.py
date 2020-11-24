@@ -39,7 +39,7 @@ from include.constants import Constants as C
 from include.logger import Log
 from include.pubsub.genericPubSub import Subscriber
 from include.ros.topicHandler import RosTopicHandler
-from include.FiwareObjectConverter.objectFiwareConverter import ObjectFiwareConverter
+from include.FiwareObjectConverter.fiwareobjectconverter.object_fiware_converter import ObjectFiwareConverter
 
 
 
@@ -338,7 +338,7 @@ class CBServer:
 
 
             obj = self.TypeValue()
-            ObjectFiwareConverter.fiware2Obj(jsonData, obj, setAttr=True, useMetaData=False, encoded=True)
+            ObjectFiwareConverter.fiware_to_obj(jsonData, obj, set_attr=True, use_meta_data=False, encoded=True)
             obj.id = obj.id.replace(".", "/")
             obj.type = obj.type.replace("%2F", "/")
             

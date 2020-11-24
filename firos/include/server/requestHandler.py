@@ -41,7 +41,7 @@ from include.confManager import getRobots
 from include.ros.rosConfigurator import RosConfigurator
 from include.ros.topicHandler import RosTopicHandler, loadMsgHandlers, ROS_PUBLISHER, ROS_SUBSCRIBER, ROS_TOPIC_AS_DICT, ROS_SUBSCRIBER_LAST_MESSAGE
 from include.constants import Constants as C 
-from include.FiwareObjectConverter.objectFiwareConverter import ObjectFiwareConverter
+from include.FiwareObjectConverter.fiwareobjectconverter.object_fiware_converter import ObjectFiwareConverter
 
 
 class RequestHandler(BaseHTTPRequestHandler):
@@ -136,7 +136,7 @@ def onRobotData(request, action):
             obj = {s: getattr(lastPubData, s, None) for s in lastPubData.__slots__}
             obj["id"] = name
             obj["type"] = lastPubData._type
-            json = ObjectFiwareConverter.obj2Fiware(obj, dataTypeDict=ROS_TOPIC_AS_DICT[name], ignorePythonMetaData=True, ind=None)
+            json = ObjectFiwareConverter.obj_to_fiware(obj, data_type_dict=ROS_TOPIC_AS_DICT[name], ignore_python_meta_data=True, indent=None)
         else:
             json = ""
     else:
