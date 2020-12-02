@@ -24,6 +24,7 @@ import re
 import cgi
 import json
 import requests
+
 try:
     # Python 3
     from urllib.parse import urlparse, parse_qs
@@ -40,8 +41,9 @@ from include.logger import Log
 from include.confManager import getRobots
 from include.ros.rosConfigurator import RosConfigurator
 from include.ros.topicHandler import RosTopicHandler, loadMsgHandlers, ROS_PUBLISHER, ROS_SUBSCRIBER, ROS_TOPIC_AS_DICT, ROS_SUBSCRIBER_LAST_MESSAGE
-from include.constants import Constants as C 
-from include.FiwareObjectConverter.fiwareobjectconverter.object_fiware_converter import ObjectFiwareConverter
+from include.constants import Constants as C
+
+from fiwareobjectconverter.object_fiware_converter import ObjectFiwareConverter
 
 
 class RequestHandler(BaseHTTPRequestHandler):

@@ -39,7 +39,7 @@ from include.constants import Constants as C
 from include.logger import Log
 from include.pubsub.genericPubSub import Subscriber
 from include.ros.topicHandler import RosTopicHandler
-from include.FiwareObjectConverter.fiwareobjectconverter.object_fiware_converter import ObjectFiwareConverter
+from fiwareobjectconverter.object_fiware_converter import ObjectFiwareConverter
 
 
 
