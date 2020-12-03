@@ -29,9 +29,9 @@ regex = re.compile(u'^(.*)(\\b.msg\\b)(.*)$')
 
 
 class LibLoader:
-    ''' LibLoader is a class which tries to retrieve the python class of 
+    ''' LibLoader is a class which tries to retrieve the python class of
         specific ROS-Messages. First it tries to retrieve it via the standard
-        python import module. If this fails, it checks the folder FIORS/msgs for the 
+        python import module. If this fails, it checks the folder FIORS/msgs for the
         specific message. If the '.msg'-File is missing in the corresponding folder (or
         the class could not be generated), this LibLoader tries to load the message via
         roslib. If every method fails FIROS will shutdown, since FIROS need the messages
@@ -47,7 +47,7 @@ class LibLoader:
 
     @staticmethod
     def _init_search_path(path):
-        ''' Initializes the search path for genpy. 
+        ''' Initializes the search path for genpy.
             In this case we add all directory-names into the search path which
             are available in path and try to retrieve available Message from the System
 
@@ -71,14 +71,14 @@ class LibLoader:
 
     @staticmethod
     def _init_searchpath_for_available_msgs_on_system():
-        ''' Initializes the systempath for genpy for available Messages. 
+        ''' Initializes the systempath for genpy for available Messages.
             To achieve this, we use the Environment-Variable 'ROS_PACKAGE_PATH'
             which usually should be available.
         '''
 
         if len(LibLoader.systemPath) != 0:
             # SystemPath is already initialized
-            return 
+            return
 
         if "ROS_PACKAGE_PATH" not in os.environ:
             Log("WARNING", "The ENV 'ROS_PACKAGE_PATH' is not set. Unable to search for Messages on this system")
@@ -93,7 +93,7 @@ class LibLoader:
             for found_msg in result:
                 # found_msg is like '/opt/.../share/PACKAGE_NAME/msg/THE_MESSAGE.msg'
                 # with very few exceptions (in case CMakeLists.txt tells Catkin to look for the Messages in another Folder)
-                # TODO DL Maybe we can look inside the parent folders for the nearest CMakeLists.txt-File. The pkg_name is then the 
+                # TODO DL Maybe we can look inside the parent folders for the nearest CMakeLists.txt-File. The pkg_name is then the
                 # folder name, where the CMakeLists.txt-File is (always the case?)
                 if "/firos/" in  found_msg:
                     # Skip the Project itself
@@ -128,7 +128,7 @@ class LibLoader:
             try:
                 module = importlib.import_module(module_name + ".msg")
                 clazz = getattr(module, module_msg)
-                return clazz 
+                return clazz
             except ImportError:
                 Log("WARNING", "Message {} was not found. Trying to load the Message-File in FIROS/msgs".format(module_msg))
             except AttributeError:
@@ -141,8 +141,8 @@ class LibLoader:
             msgsFold = current_path + "/../../msgs/" # FIROS/msgs - Folder
             search_path = LibLoader._init_search_path(msgsFold)
             search_path["namespace"] = module_name
-            try:    
-                # Disable Output, since genpy prints exceptions 
+            try:
+                # Disable Output, since genpy prints exceptions
                 sys.stdout = open(os.devnull, "w")
                 sys.stderr = open(os.devnull, "w")
                 retcode = MsgGenerator().generate_messages(module_name, [msgsFold + module_name + "/" + module_msg + ".msg"], msgsFold + module_name, search_path)
@@ -162,7 +162,7 @@ class LibLoader:
                 module = imp.load_source(module_msg, msgsFold + module_name + "/_" + module_msg + ".py")
                 clazz = getattr(module, module_msg)
                 Log("INFO", "Message {}/{} succesfully loaded.".format(module_name, module_msg))
-                return clazz 
+                return clazz
 
 
 
@@ -175,11 +175,10 @@ class LibLoader:
                     clazz = roslib.message.get_message_class(type_name)
                     Log("INFO", "Message {}/{} loaded via roslib.message!".format(module_name, module_msg))
                     return clazz
-            except Exception:    
+            except Exception:
                 pass
 
 
         ### Message could not be loaded or the regex does not match
         Log("ERROR", "Unable to load the Message: {} on this System.".format(msgType))
         exit()
-

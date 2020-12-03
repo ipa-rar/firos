@@ -47,11 +47,11 @@ from include.FiwareObjectConverter.objectFiwareConverter import ObjectFiwareConv
 class CbSubscriber(Subscriber):
     ''' The CbSubscriber handles the subscriptions on the ContextBroker.
         Only the url CONTEXT_BROKER / v2 / subcriptions  is used here!
-        As on CbPublisher on shutdown all subscriptions are deleted form 
-        ContextBroker. 
+        As on CbPublisher on shutdown all subscriptions are deleted form
+        ContextBroker.
 
         this Objects also converts the received data from ContextBroker
-        back into a Python-Object. 
+        back into a Python-Object.
 
         Here each topic of an robot is subscribed seperately.
 
@@ -65,7 +65,7 @@ class CbSubscriber(Subscriber):
     FIROS_NOTIFY_URL = None
 
     def __init__(self):
-        ''' 
+        '''
             Lazy Initialization of CB_BASE_URL
             and setting up Configuration-Parameters
         '''
@@ -88,7 +88,7 @@ class CbSubscriber(Subscriber):
 
         if "throttling" not in data["subscription"]:
             data["subscription"]["throttling"] = 0
-        else: 
+        else:
             data["subscription"]["throttling"] = int(data["subscription"]["throttling"])
 
         if "subscription_length" not in data["subscription"]:
@@ -114,13 +114,13 @@ class CbSubscriber(Subscriber):
             This method only gets called once (or multiple times, if we get a reset!)! So we need to make sure, that in this file
             'RosTopicHandler.publish' is called somehow independently after some Signal arrived (from elsewhere).
 
-            Keep in mind that Firos can get a Reset-Signal, in this case, this method is called again. Make sure that this method can get called 
+            Keep in mind that Firos can get a Reset-Signal, in this case, this method is called again. Make sure that this method can get called
             multiple times!
 
-            In this Context-Broker-Subscriber we spawn ONE HTTP-Base-Server in another Thread, which will be used, 
-            so that the Context-Broker can notify us after it received a Message. 
+            In this Context-Broker-Subscriber we spawn ONE HTTP-Base-Server in another Thread, which will be used,
+            so that the Context-Broker can notify us after it received a Message.
 
-            In addition to that, the Context-Broker needs to know how to notify us. This is solved by adding subscriptions into 
+            In addition to that, the Context-Broker needs to know how to notify us. This is solved by adding subscriptions into
             the Context-Broker, which we need to manually maintain. Again we start a Thread for each Topic which handles the Subscriptions
 
 
@@ -135,7 +135,7 @@ class CbSubscriber(Subscriber):
         # Do nothing if no Configuratuion
         if self.noConf:
             return
-        
+
         ### Start the HTTPServer and wait until it is ready!
         if not self.serverIsRunning:
             server_ready = threading.Event()
@@ -150,11 +150,11 @@ class CbSubscriber(Subscriber):
         for topic in topicList:
             if topic not in self.subscriptionIds:
                 Log("INFO", "Subscribing on Context-Broker to topics: " + str(list(topicList)))
-                thread.start_new_thread(self.subscribeThread, (topic, topicTypes, msgDefintions)) #Start Thread via subscription         
+                thread.start_new_thread(self.subscribeThread, (topic, topicTypes, msgDefintions)) #Start Thread via subscription
 
 
     def unsubscribe(self):
-        ''' 
+        '''
             Simply unsubscribed from all tracked subscriptions
             and also stop the HTTP-Server
         '''
@@ -177,7 +177,7 @@ class CbSubscriber(Subscriber):
     ####################################################
 
     def subscribeThread(self, topic, topicTypes, msgDefintions):
-        ''' 
+        '''
             A Subscription-Thread. Its Life-Cycle is as follows:
             -> Subscribe -> Delete old Subs-ID -> Save new Subs-ID -> Wait ->
 
@@ -198,7 +198,7 @@ class CbSubscriber(Subscriber):
             if topic in self.subscriptionIds:
                 response = requests.delete(self.CB_BASE_URL + self.subscriptionIds[topic])
                 self._checkResponse(response, subID=self.subscriptionIds[topic])
-                
+
             # Save new ID
             self.subscriptionIds[topic] = newSubID
 
@@ -208,8 +208,8 @@ class CbSubscriber(Subscriber):
 
 
     def subscribeJSONGenerator(self, topic, topicTypes, msgDefintions):
-        ''' 
-            This method returns the correct JSON-format to subscribe to the ContextBroker. 
+        '''
+            This method returns the correct JSON-format to subscribe to the ContextBroker.
             The Expiration-Date/Throttle and Type of topics is retreived here via the configuration we got
 
             topic: The actual topic to subscribe to.
@@ -232,15 +232,15 @@ class CbSubscriber(Subscriber):
             "attrs": list(msgDefintions[topic].keys())
             },
             "expires": time.strftime("%Y-%m-%dT%H:%M:%S.00Z", time.gmtime(time.time() + self.data["subscription"]["subscription_length"])), # ISO 8601
-            "throttling": self.data["subscription"]["throttling"]  
+            "throttling": self.data["subscription"]["throttling"]
             }
         return json.dumps(struct)
 
 
     def _checkResponse(self, response, robTop=None, subID=None, created=False):
-        ''' 
+        '''
             If a not good response from ContextBroker is received, the error will be printed.
-    
+
             response: The response from ContextBroker
             robTop:   A string (topic), for the curretn robot/topic
             subID:    The Subscription ID string, which should get deleted
@@ -261,7 +261,7 @@ class CbSubscriber(Subscriber):
 class CBServer:
     '''
         This is the HTTPServer, which start listening on an adress and a free port
-        Here we provide 3 methods: Initialize, start and stop. Start and stop either 
+        Here we provide 3 methods: Initialize, start and stop. Start and stop either
         start or stop this Server.
     '''
     def __init__(self, thread_event):
@@ -274,7 +274,7 @@ class CBServer:
 
         Protocol = "HTTP/1.0"
 
-        if C.EP_SERVER_PORT is not None and isinstance(C.EP_SERVER_PORT, int) :
+        if C.EP_SERVER_PORT is not None and isinstance(C.EP_SERVER_PORT, int):
             server_address = ("0.0.0.0", C.EP_SERVER_PORT)
         else:
             server_address = ("0.0.0.0", 0)
@@ -305,7 +305,7 @@ class CBServer:
     class CBHandler(BaseHTTPRequestHandler):
         ''' This is the FIROS-HTTP-Request-Handler. It is needed,
             because the ContextBroker sends Information about the
-            subscriptions via HTTP. This Class just handles incoming 
+            subscriptions via HTTP. This Class just handles incoming
             Requests and converts the received Data into a "ROS-conform Message".
             in """do_POST""" we invoke """RosTopicHandler.publish"""
         '''
@@ -322,7 +322,7 @@ class CBServer:
 
         def do_POST(self):
             ''' The ContextBroker is informing us via one of our subscriptions.
-                We convert the received content back and publish 
+                We convert the received content back and publish
                 it in ROS.
 
                 self: The "request" from the Context-Broker
@@ -332,7 +332,7 @@ class CBServer:
             # retreive Data and get the updated information
             recData = self.rfile.read(int(self.headers['Content-Length']))
             receivedData = json.loads(recData)
-            data = receivedData['data'][0] # Specific to NGSIv2 
+            data = receivedData['data'][0] # Specific to NGSIv2
             jsonData = json.dumps(data)
 
 
@@ -341,7 +341,7 @@ class CBServer:
             ObjectFiwareConverter.fiware2Obj(jsonData, obj, setAttr=True, useMetaData=False, encoded=True)
             obj.id = obj.id.replace(".", "/")
             obj.type = obj.type.replace("%2F", "/")
-            
+
             objType = obj.type
             topic = obj.id
 
@@ -359,10 +359,10 @@ class CBServer:
 
         ### Back Conversion From Entity-JSON into Python-Object
         def _buildTypeStruct(self, obj):
-            ''' This generates a struct containing a type (the actual ROS-Message-Type) and 
+            ''' This generates a struct containing a type (the actual ROS-Message-Type) and
                 its value (either empty or more ROS-Message-Types).
 
-                This struct is used later to recursivley load needed Messages and fill them with 
+                This struct is used later to recursivley load needed Messages and fill them with
                 content before they are posted back to ROS.
 
                 obj:    The received update from Context-Broker
@@ -370,9 +370,9 @@ class CBServer:
             s = {}
 
             # Searching for a point to get ROS-Message-Types from the obj
-            if 'value' in obj and 'type' in obj and "/" in obj['type'] : 
+            if 'value' in obj and 'type' in obj and "/" in obj['type']:
                 s['type'] = obj['type']
-                objval = obj['value'] 
+                objval = obj['value']
                 s['value'] = {}
 
                 # For each value in Object repeat!

@@ -40,13 +40,13 @@ from include.logger import Log
 from include.confManager import getRobots
 from include.ros.rosConfigurator import RosConfigurator
 from include.ros.topicHandler import RosTopicHandler, loadMsgHandlers, ROS_PUBLISHER, ROS_SUBSCRIBER, ROS_TOPIC_AS_DICT, ROS_SUBSCRIBER_LAST_MESSAGE
-from include.constants import Constants as C 
+from include.constants import Constants as C
 from include.FiwareObjectConverter.objectFiwareConverter import ObjectFiwareConverter
 
 
 class RequestHandler(BaseHTTPRequestHandler):
     ''' This is the FIROS-HTTP-Request-Handler. It is needed,
-        because we offer some functionality via Firos. This Class just handles incoming 
+        because we offer some functionality via Firos. This Class just handles incoming
         Requests and deligates them further to the specific ones. Firos
         allows some extra operations here like Connect and Disconnect.
     '''
@@ -74,8 +74,8 @@ class RequestHandler(BaseHTTPRequestHandler):
 
 
 def getPostParams(request):
-    ''' Returns from the given request its parameters which were 
-        posted prior. 
+    ''' Returns from the given request its parameters which were
+        posted prior.
     '''
     ctype, pdict = cgi.parse_header(request.headers.get('content-type'))
     if ctype == 'multipart/form-data':
@@ -103,7 +103,7 @@ def getAction(path, method):
 
 ###############################################################################
 #############################   Request Mapping   #############################
-############################################################################### 
+###############################################################################
 
 def listTopics(request, action):
     ''' Generates a list of all topics (depending on RosConfigurator, confManager)
@@ -112,8 +112,8 @@ def listTopics(request, action):
     robots = getRobots(False)
     data = []
     for topic in robots.keys():
-        robot_data = {"topic": topic, 
-                    "pubSub": robots[topic][1], 
+        robot_data = {"topic": topic,
+                    "pubSub": robots[topic][1],
                     "messageType": robots[topic][0] }
         robot_data["structure"] = ROS_TOPIC_AS_DICT[topic]
         data.append(robot_data)
@@ -142,7 +142,7 @@ def onRobotData(request, action):
     else:
         json = ""
 
-    
+
 
     # Return the Information provided by the Context-Broker
     end_request(request, ('Content-Type', 'application/json'), 200, json)
@@ -163,7 +163,7 @@ def onConnect(request, action):
 
 def onDisConnect(request, action):
     ''' Removes the robot specified via url like
-        '/disconnect/ROBOT_ID' from ROS-Publisher and 
+        '/disconnect/ROBOT_ID' from ROS-Publisher and
         Ros-Subscriber
 
         We only are here when the URl is like:
@@ -178,26 +178,26 @@ def onDisConnect(request, action):
     topic = partURL[11:] # Get everything after "/disconnect"
 
 
-    
+
     # Iterate through every topic and unregister, then delete it
     if topic in ROS_PUBLISHER:
         ROS_PUBLISHER[topic].unregister()
         del ROS_PUBLISHER[topic]
         Log("INFO", "Disconnecting publisher on '{}'".format(topic))
         RosConfigurator.removeTopic(topic)
-    
+
     if topic in ROS_SUBSCRIBER:
         ROS_SUBSCRIBER[topic].unregister()
         del ROS_SUBSCRIBER[topic]
         Log("INFO", "Disconnecting subscriber on '{}'".format(topic))
         RosConfigurator.removeTopic(topic)
-    
+
     # Return success
     end_request(request, None, 200, "")
 
 
 
-# Mapper to the methods 
+# Mapper to the methods
 MAPPER = {
     "GET": [
         {"regexp": "^/topics/*$", "action": listTopics},

@@ -61,16 +61,16 @@ if __name__ == '__main__':
     parser.add_argument('--ros-node-name', action='store', dest='ros_node_name', help='Set the ROS-Node-Name')
     parser.add_argument('--loglevel', action='store', dest='loglevel', help='Set the LogLevel (INFO, WARNING, ERROR,  CRITICAL)')
 
-                    
+
     # Get Input
     results = parser.parse_args()
-    
+
     # At first determine the config-Folder location (either in firos/config or customly set)
     current_path = os.path.dirname(os.path.abspath(__file__))
     conf_path = current_path + "/../config"
-    
 
-    # Check if the CLI specified a config folder 
+
+    # Check if the CLI specified a config folder
     if results.conf_Fold is not None:
         conf_path = os.path.abspath(results.conf_Fold)
 
@@ -82,16 +82,16 @@ if __name__ == '__main__':
     from include import confManager
     from include.logger import Log, initLog
     from include.server.firosServer import FirosServer
-    
+
     from include.ros.topicHandler import RosTopicHandler, loadMsgHandlers, createConnectionListeners, initPubAndSub
 
     # Overwrite global variables with command line arguments (iff set)
     if results.port is not None:
         C.MAP_SERVER_PORT = int(results.port)
-            
+
     if results.ros_port is not None:
         C.ROSBRIDGE_PORT = int(results.ros_port)
-    
+
     if rosLaunch_name is not None:
         C.ROS_NODE_NAME = rosLaunch_name
     elif results.ros_node_name is not None:
@@ -100,7 +100,7 @@ if __name__ == '__main__':
     if results.loglevel is not None:
         C.LOGLEVEL = results.loglevel
 
-    
+
     # Starting Up!
     initLog()
     Log("INFO", "Initializing ROS node: " + C.ROS_NODE_NAME)
@@ -133,4 +133,3 @@ if __name__ == '__main__':
 
         Log("INFO", "\nPress Ctrl+C to Exit\n")
         server.start()
-

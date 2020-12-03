@@ -35,11 +35,11 @@ class Constants:
     EP_SERVER_ADRESS = None
     EP_SERVER_PORT = None
     MAP_SERVER_PORT = 10100
-    ROSBRIDGE_PORT = 9090 
+    ROSBRIDGE_PORT = 9090
     PUB_FREQUENCY = 0               # In Milliseconds
 
     ROS_NODE_NAME = "firos"
-    ROS_SUB_QUEUE_SIZE = 10 
+    ROS_SUB_QUEUE_SIZE = 10
 
     @classmethod
     def setConfiguration(cls, path):
@@ -57,7 +57,7 @@ class Constants:
 
             configData = cls.setConfiguration(path)
             cls.DATA = configData
-            
+
             if "log_level" in configData:
                 cls.LOGLEVEL = configData["log_level"]
 
@@ -66,7 +66,7 @@ class Constants:
 
             if "node_name" in configData:
                 cls.ROS_NODE_NAME = configData["node_name"]
-            
+
             if "ros_subscriber_queue" in configData:
                 cls.ROS_SUB_QUEUE_SIZE = int(configData["ros_subscriber_queue"])
 

@@ -28,21 +28,21 @@ def getRobots(refresh=False):
     ''' This retrieves the current configuration from FIROS.
         Here we load the `robots.json` and the 'whitelist.json'
 
-        In case the `whitelist.json` is Empty: We do get the current robots 
+        In case the `whitelist.json` is Empty: We do get the current robots
         from ROS and are adding them as subscribers (by default). In a small
-        ROS-World this usually is no problem. But in an environment with many 
-        robots we might send a lot of data. 
+        ROS-World this usually is no problem. But in an environment with many
+        robots we might send a lot of data.
     '''
     try:
         # Retrieves the whitelist.json. If it does not exists, it returns all topics.
         topics_regex = copy.deepcopy(RosConfigurator.systemTopics(refresh))
-        
+
         # Retrieves the robots.json.
         topics_json = getTopicsByJson()
-        if len(topics_json) == 0: 
+        if len(topics_json) == 0:
             Log("ERROR", "The file 'topics.json' is either empty or does not exist!\n\nExiting")
             sys.exit(1)
-        
+
         # check if structure is as needed
         for key in topics_json.keys():
             if len(topics_json[key]) != 2:
@@ -72,7 +72,7 @@ def getRobots(refresh=False):
 
 
 def getTopicsByJson():
-    ''' Load the 'topics.json'-File 
+    ''' Load the 'topics.json'-File
     '''
     try:
         json_path = C.PATH + "/topics.json"

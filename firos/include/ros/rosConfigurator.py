@@ -24,7 +24,7 @@ from include.logger import Log
 from include.constants import Constants as C
 
 
-entries = [] # Entries we found in the ROS-World 
+entries = [] # Entries we found in the ROS-World
 whitelist = {} # The Current Whitelist FIROS is currently using
 robots = {} # The dictionary containing: robots["topics"] = [MessageType, pubSub]
 
@@ -37,7 +37,7 @@ class RosConfigurator:
     @staticmethod
     def getAllTopics(refresh=True):
         '''
-            this retrieves all Entries/Topics found in the current 
+            this retrieves all Entries/Topics found in the current
             ROS-World. The Parameter, refresh, indicates, whether we want to
             update our current information abour the entries or not
         '''
@@ -45,9 +45,9 @@ class RosConfigurator:
         if refresh or len(entries) == 0:
             listOfData = rospy.get_published_topics()
             entries = [item for sublist in listOfData for item in sublist if item.startswith("/")]
-            
+
         return entries
-    
+
 
     @staticmethod
     def getWhiteList(restore=False):
@@ -69,7 +69,7 @@ class RosConfigurator:
     def systemTopics(refresh=False, restore=False):
         '''
             This generates the actual robots-Structure
-            At First the Regex-Expressions are generated, then the Robot with the 
+            At First the Regex-Expressions are generated, then the Robot with the
             topic is added iff it exists in the ROS-World.
 
             refresh: Refreshes the ROS-World Information if set to True AND the robots dictionary
@@ -97,8 +97,8 @@ class RosConfigurator:
 
             robots = _robots
         return robots
-                    
-        
+
+
     @staticmethod
     def addRobots(robots, regex, entries, pubsub):
         '''
@@ -115,7 +115,7 @@ class RosConfigurator:
             matches = re.search(regex, entry)
             if matches is not None:
                 # We found a Match. Now add it to robots
-                
+
                 if entry not in robots:
                     # if not already added, add it
                     topic_type, _, _ = rostopic.get_topic_type(entry)

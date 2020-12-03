@@ -1,17 +1,17 @@
 # MIT License
-# 
+#
 # Copyright (c) 2019 Fraunhofer IML
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be included in all
 # copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -34,12 +34,12 @@ import importlib
 from include.constants import Constants as C
 
 # ABC compatibility with Python 2 and 3
-ABC = abc.ABCMeta('ABC', (object,), {'__slots__': ()}) 
+ABC = abc.ABCMeta('ABC', (object,), {'__slots__': ()})
 
 class Publisher(ABC):
     '''
-        Abstract Publisher. Import this and set it as base 
-        to write your own Publisher 
+        Abstract Publisher. Import this and set it as base
+        to write your own Publisher
     '''
 
     # Data which is added via config.json
@@ -49,7 +49,7 @@ class Publisher(ABC):
     @abc.abstractmethod
     def publish(self, topic, rawMsg, msgDefinitions):
         pass
-    
+
     @abc.abstractmethod
     def unpublish(self):
         pass
@@ -57,8 +57,8 @@ class Publisher(ABC):
 
 class Subscriber(ABC):
     '''
-        Abstract Subscriber. Import this and set it as base 
-        to write your own Subscriber 
+        Abstract Subscriber. Import this and set it as base
+        to write your own Subscriber
     '''
 
     # Data which is added via config.json
@@ -68,7 +68,7 @@ class Subscriber(ABC):
     @abc.abstractmethod
     def subscribe(self, topicList, topicTypes, msgDefinitions):
         pass
-    
+
     @abc.abstractmethod
     def unsubscribe(self):
         pass
@@ -78,8 +78,8 @@ class PubSub(object):
     '''
         This is a generic Publisher and Subscriber class which contains all
         defined Publishers and Subscribers. It automatically loads the classes,
-        which inherit from the above defined Publisher/Subscriber-class and are in 
-        a subfolder (depending on this files location). 
+        which inherit from the above defined Publisher/Subscriber-class and are in
+        a subfolder (depending on this files location).
 
         This class maps the calls 'publish', 'unpublish', 'subscribe' and 'unsubscribe'
         to each Publisher and Subscriber.
@@ -94,7 +94,7 @@ class PubSub(object):
 
             We retreive here all classes which are in the subfolder (depending on the files location).
 
-            Each subfolder should contain an '__init__.py' and the corresponding Publishers and Subscribers 
+            Each subfolder should contain an '__init__.py' and the corresponding Publishers and Subscribers
             you want to add.
         '''
         folder = os.path.dirname(os.path.realpath(__file__))
@@ -114,7 +114,7 @@ class PubSub(object):
                     if not f.startswith("_"):
                         subfolders[i][f.split(".")[0]] = None
 
-        ### Import the modules, defined in the files        
+        ### Import the modules, defined in the files
         for fold in subfolders.keys():
             for fil in subfolders[fold].keys():
                 module_def = "include.pubsub." + fold + "." + fil
@@ -158,7 +158,7 @@ class PubSub(object):
         for pub in self.publishers:
             pub.publish(topic, rawMsg, msgDefinitions)
 
-    
+
     def unpublish(self):
         '''
             Call unpublish on each Publisher
@@ -172,11 +172,10 @@ class PubSub(object):
         '''
         for sub in self.subscribers:
             sub.subscribe(topicList, topicTypes, msgDefinitions)
-    
+
     def unsubscribe(self):
         '''
             Call unsubscribe on each Subscriber
         '''
         for sub in self.subscribers:
             sub.unsubscribe()
-

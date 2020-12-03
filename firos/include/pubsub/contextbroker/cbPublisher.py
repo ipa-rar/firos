@@ -35,17 +35,17 @@ from include.pubsub.genericPubSub import Publisher
 class CbPublisher(Publisher):
     ''' The CbPublisher handles the Enities on CONTEXT_BROKER / v2 / entities .
         It creates not creaed Entities and updates their attributes via 'publishToCB'.
-        On Shutdown the tracked Entities are deleted. 
+        On Shutdown the tracked Entities are deleted.
 
         Also the rawMsg is converted here via the Object Converter
 
         THIS IS THE ONLY FILE WHICH OPERATES ON /v2/entities
 
-        Also this Method is called, after FIROS received a Message 
+        Also this Method is called, after FIROS received a Message
     '''
 
     # Keeps track of the posted Content on the ContextBroker
-    # via posted_history[ROBOT_ID + "/" + TOPIC] 
+    # via posted_history[ROBOT_ID + "/" + TOPIC]
     posted_history = {}
     CB_HEADER = {'Content-Type': 'application/json'}
     CB_BASE_URL = None
@@ -66,7 +66,7 @@ class CbPublisher(Publisher):
 
         ## Set Configuration
         data = self.configData
-        if "address" not in data or "port" not in data: 
+        if "address" not in data or "port" not in data:
             raise Exception("No Context-Broker specified!")
 
         self.data = data
@@ -94,7 +94,7 @@ class CbPublisher(Publisher):
         # if struct not initilized, intitilize it even on ContextBroker!
         if topic not in self.posted_history:
             self.posted_history[topic] = rawMsg
-            
+
             obj = {s: getattr(rawMsg, s, None) for s in rawMsg.__slots__}
             obj["type"] = rawMsg._type#.replace("/", "%2F") # OCB Specific!!
             obj["id"] = (topic).replace("/", ".") # OCB Specific!!
@@ -110,7 +110,7 @@ class CbPublisher(Publisher):
         obj = {s: getattr(rawMsg, s, None) for s in rawMsg.__slots__}
         obj["type"] = rawMsg._type.replace("/", "%2F") # OCB Specific!!
         obj["id"] = (topic).replace("/", ".") # OCB Specific!!
-        jsonStr = ObjectFiwareConverter.obj2Fiware(obj, ind=None, dataTypeDict=msgDefintionDict[topic],  ignorePythonMetaData=True, showIdValue=False, encode=True) 
+        jsonStr = ObjectFiwareConverter.obj2Fiware(obj, ind=None, dataTypeDict=msgDefintionDict[topic],  ignorePythonMetaData=True, showIdValue=False, encode=True)
         # print(jsonStr)
 
         # Update attribute on ContextBroker
@@ -119,20 +119,20 @@ class CbPublisher(Publisher):
 
 
     def unpublish(self):
-        ''' 
+        '''
             Removes all previously tracked topics on ContextBroker
             This method also gets automaticall called, someone sent Firos the Shutdown Signal
         '''
         for idd in self.posted_history.keys():
             response = requests.delete(self.CB_BASE_URL + idd.replace("/", ".")) # OCB Specific!!
             self._responseCheck(response, attrAction=2, topEnt=idd)
-        
-        
+
+
 
 
     def _responseCheck(self, response, attrAction=0, topEnt=None):
         ''' Check if Response is ok (2XX and some 3XX). If not print an individual Error.
-            
+
             response: the actual response
             attrAction: One of [0, 1, 2]  which maps to -> [Creation, Update, Deletion]
             topEnt: the String of an Entity or a topic, which was used

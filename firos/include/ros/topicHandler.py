@@ -26,7 +26,7 @@ import importlib
 import time
 
 from include.logger import Log
-from include.constants import Constants as C 
+from include.constants import Constants as C
 from include.libLoader import LibLoader
 from include import confManager
 
@@ -36,26 +36,26 @@ from include.pubsub.genericPubSub import PubSub
 # this Message is needed, for the Listeners on connect on disconnect
 import std_msgs.msg
 
-# Structs with topic: 
+# Structs with topic:
 # ROS_PUBSUB[topic] --> returns  rospy Publisher/Subsriber
 ROS_PUBLISHER = {}
 ROS_SUBSCRIBER_LAST_MESSAGE = {}
 ROS_SUBSCRIBER = {}
 
 # A Struct which is used to minimize the Number of publishes. Here we only
-# save time stamps of ids. LAST_PUBLISH_TIME[topic] would return a time 
+# save time stamps of ids. LAST_PUBLISH_TIME[topic] would return a time
 LAST_PUBLISH_TIME = dict()
 
-# Topics in ROS do only have one data-type! 
+# Topics in ROS do only have one data-type!
 # (There might be an Exception to this if the topic gets deregistered, this is currently ignored)
 # We use this here to load the type of an topic and the dictionary rep. only once!
-ROS_TOPIC_TYPE = {}  
+ROS_TOPIC_TYPE = {}
 ROS_TOPIC_AS_DICT ={}
 
 # ROS-Node Subscribers  (connect/disconnect)
 subscribers = []
 
-# Actual ROS-Classes are used in instantiateROSMessage and loadMsgHandlers. 
+# Actual ROS-Classes are used in instantiateROSMessage and loadMsgHandlers.
 # An entry is the ._type-Attribute of the ROS-Messages ('/' is replaced by '.')
 ROS_MESSAGE_CLASSES = {}
 
@@ -69,7 +69,7 @@ def initPubAndSub():
     CloudPubSub = PubSub()
 
 def loadMsgHandlers(topics_data):
-    ''' This method initializes The Publisher and Subscriber for ROS and 
+    ''' This method initializes The Publisher and Subscriber for ROS and
         the Subscribers for the Context-broker (based on ROS-Publishers).
         It also initializes the structs for ROS messages (types, dicts and classes)
 
@@ -84,14 +84,14 @@ def loadMsgHandlers(topics_data):
     Log("INFO", "Getting configuration data")
     Log("INFO", "Generating topic handlers:")
 
-    # Generate 
+    # Generate
     for topic in topics_data.keys():
         # for each topic and topic in topics_data:
 
         # Load specific message from robot_data
         msg = str(topics_data[topic][0])
-        theclass = LibLoader.loadFromSystem(msg, topic) 
-        
+        theclass = LibLoader.loadFromSystem(msg, topic)
+
         # Add specific message in struct to not load it again later.
         if theclass._type not in ROS_MESSAGE_CLASSES:
             ROS_MESSAGE_CLASSES[theclass._type] = theclass  # setting Class
@@ -99,7 +99,7 @@ def loadMsgHandlers(topics_data):
         # Create, if not already, a dictionary from the corresponding message-type
         if topic not in ROS_TOPIC_AS_DICT:
             ROS_TOPIC_AS_DICT[topic] = rosMsg2Dict(theclass())
-        
+
         # Set the topic class-type, which is for each topic always the same
         ROS_TOPIC_TYPE[topic] = theclass._type
 
@@ -114,7 +114,7 @@ def loadMsgHandlers(topics_data):
             ROS_PUBLISHER[topic] = rospy.Publisher(topic, theclass, queue_size=C.ROS_SUB_QUEUE_SIZE, latch=True)
 
     # After initializing ROS-PUB/SUBs, intitialize ContextBroker-Subscriber based on ROS-Publishers for each robot
-    CloudPubSub.subscribe(ROS_PUBLISHER.keys(), ROS_TOPIC_TYPE, ROS_TOPIC_AS_DICT)  
+    CloudPubSub.subscribe(ROS_PUBLISHER.keys(), ROS_TOPIC_TYPE, ROS_TOPIC_AS_DICT)
     Log("INFO", "\n")
     Log("INFO", "Subscribed to " + str(list(ROS_PUBLISHER.keys())) + "\n")
 
@@ -130,30 +130,30 @@ def _publishToCBRoutine(data, args):
         args: additional arguments we set prior
     '''
     if not SHUTDOWN_SIGNAL:
-        topic = args['topic'] # Retreiving additional Infos, which were set on initialization 
-    
+        topic = args['topic'] # Retreiving additional Infos, which were set on initialization
+
         t = time.time() * 1000 # Get Millis
         if topic in LAST_PUBLISH_TIME and LAST_PUBLISH_TIME[topic] >= t:
             # Case: We want it to publish again, but we did not wait PUB_FREQUENCY milliseconds
-            return 
+            return
 
-        CloudPubSub.publish(topic, data, ROS_TOPIC_AS_DICT) 
+        CloudPubSub.publish(topic, data, ROS_TOPIC_AS_DICT)
         ROS_SUBSCRIBER_LAST_MESSAGE[topic] = data
         LAST_PUBLISH_TIME[topic] = t + C.PUB_FREQUENCY
 
 
 
 class RosTopicHandler:
-    ''' The Class RosTopicHandler is a Wrapper-Class which 
+    ''' The Class RosTopicHandler is a Wrapper-Class which
         just maps the publish Routine to the cbPublisher (for the requestHandler) and
         by shutdown removes and deletes all Subscriptions/created Entities (for core)
     '''
 
 
-    
+
     @staticmethod
     def publish(topic, convertedData, dataStruct):
-        ''' This method publishes the receive data from the 
+        ''' This method publishes the receive data from the
             ContextBroker to ROS
 
             topic: The topic to be published
@@ -161,8 +161,8 @@ class RosTopicHandler:
             dataStruct: The struct of convertedData, specified by their types
         '''
         if topic in ROS_PUBLISHER:
-            if topic in ROS_TOPIC_TYPE and ROS_TOPIC_TYPE[topic] == dataStruct['type']: 
-                # check if a publisher to this topic is set 
+            if topic in ROS_TOPIC_TYPE and ROS_TOPIC_TYPE[topic] == dataStruct['type']:
+                # check if a publisher to this topic is set
                 # then check the received and expected type to be equal
                 # Iff, then publish received message to ROS
                 newMsg = instantiateROSMessage(convertedData, dataStruct)
@@ -194,14 +194,14 @@ class RosTopicHandler:
 def instantiateROSMessage(obj, dataStruct):
     ''' This method instantiates via obj and dataStruct the actual ROS-Message like
         "geometry_msgs.Twist". Explicitly it loads the ROS-Message-class (if not already done)
-        with the dataStruct["type"] if given and recursively sets all attributes of the Message. 
+        with the dataStruct["type"] if given and recursively sets all attributes of the Message.
 
         obj: The Object to instantiate
         dataStruct: The corresponding dataStruct, which helps by setting the explicit ROS-Message
     '''
     # Check if type and value in datastruct, if not we default to a primitive value
     if 'type' in dataStruct and 'value' in dataStruct:
-        
+
         # Load Message-Class only if not already loaded!
         if dataStruct['type'] not in ROS_MESSAGE_CLASSES:
             msgClass = LibLoader.loadFromSystem(dataStruct['type'], None)
@@ -233,7 +233,7 @@ def instantiateROSMessage(obj, dataStruct):
             # something more simple (int, long, float), return it
             return obj
 
-            
+
 class Temp(object):
     ''' A Temp-object, to convert from a Dictionary into an object with attributes.
     '''
@@ -262,7 +262,7 @@ def rosMsg2Dict(rosClassInstance):
 ###############################################################################
 
 def createConnectionListeners():
-    ''' This creates the following listeners for firos in ROS for robot-creation 
+    ''' This creates the following listeners for firos in ROS for robot-creation
         and -removal and maps them to the methods below:
 
         /ROS_NODE_NAME/connect    --> std_msgs/String
@@ -279,7 +279,7 @@ def _robotDisconnection(data):
     '''
     topic = str(data.data)
 
-    
+
     if topic in ROS_PUBLISHER:
         for topic in ROS_PUBLISHER[topic]:
             ROS_PUBLISHER[topic][topic].unregister()
