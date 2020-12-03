@@ -15,8 +15,8 @@ class SomeExampleSubscriber(Subscriber):
             Here you can do things that need to be initialized.
 
             You can use the data provided by the 'config.json' here which can be retreived via:
-            """self.configData""". This is not None, as long as in config.json a key exists, which has
-            the same name as the subfolder this File is in.
+            """self.configData""". This is not None, as long as in config.json a key exists, which
+            has the same name as the subfolder this File is in.
 
             You can also use some other constants in:
             """from include.constants import Constants as CONSTANTS"""
@@ -31,8 +31,9 @@ class SomeExampleSubscriber(Subscriber):
             E.G. In cbSubscriber  (ContextBroker)  a HttpServer is spawned in a new Thread to
             make sure to handle incoming Context-Broker-Queries
 
-            You need to make in this Routine sure (it is only called ONCE, but can be called multiple times),
-            that you have some mechanism, which calls the described function below!
+            You need to make in this Routine sure (it is only called ONCE, but can be called
+            multiple times), that you have some mechanism, which calls the described function
+            below!
 
             """"RosTopicHandler.publish("ROBOT_ID", "TOPIC", "CONVERTED_DATA", "DATA_STRUCT")""""
 

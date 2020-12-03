@@ -14,8 +14,8 @@ class SomeExamplePublisher(Publisher):
             Here you can do things that need to be initialized.
 
             You can use the data provided by the 'config.json' here which can be retreived via:
-            """self.configData""". This is not None, as long as in config.json a key exists, which has
-            the same name as the subfolder this File is in.
+            """self.configData""". This is not None, as long as in config.json a key exists, which
+            has the same name as the subfolder this File is in.
 
             You can also use some other constants in:
             """from include.constants import Constants as CONSTANTS"""

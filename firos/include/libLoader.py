@@ -2,17 +2,23 @@
 #
 # Copyright (c) <2015> <Ikergune, Etxetar>
 #
-# Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files
-# (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge,
-# publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,
-# subject to the following conditions:
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
 #
-# The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
 #
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
-# FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-# WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
 import os
 import re
@@ -56,7 +62,8 @@ class LibLoader:
         LibLoader._init_searchpath_for_available_msgs_on_system()
         if len(LibLoader.searchpath) == 0:
             # Initialize seachpath
-            subdirs = [x[0] for x in os.walk(path)] # get all directories inside path (including itself)
+            subdirs = [x[0] for x in os.walk(path)] # get all directories inside path
+                                                    # (including itself)
             subdirs = subdirs[1:] # Remove reference to itself
             LibLoader.searchpath = LibLoader.systemPath # 'Copy' to Searchpath
             for subdir in subdirs:
@@ -81,7 +88,8 @@ class LibLoader:
             return
 
         if "ROS_PACKAGE_PATH" not in os.environ:
-            Log("WARNING", "The ENV 'ROS_PACKAGE_PATH' is not set. Unable to search for Messages on this system")
+            Log("WARNING", "The ENV 'ROS_PACKAGE_PATH' is not set. Unable to search for Messages"
+                + " on this system")
 
 
         pkgs_paths = os.environ.get('ROS_PACKAGE_PATH').split(":")
@@ -89,12 +97,17 @@ class LibLoader:
 
         for pkg_path in pkgs_paths:
             # Retrieve all folder and Files from pkg_path which ends with ".msg"
-            result = [os.path.join(dp, f) for dp, dn, filenames in os.walk(pkg_path) for f in filenames if os.path.splitext(f)[1] == '.msg']
+            result = [os.path.join(dp, f) for dp, dn, filenames in os.walk(pkg_path)
+                        for f in filenames if os.path.splitext(f)[1] == '.msg']
             for found_msg in result:
                 # found_msg is like '/opt/.../share/PACKAGE_NAME/msg/THE_MESSAGE.msg'
-                # with very few exceptions (in case CMakeLists.txt tells Catkin to look for the Messages in another Folder)
-                # TODO DL Maybe we can look inside the parent folders for the nearest CMakeLists.txt-File. The pkg_name is then the
-                # folder name, where the CMakeLists.txt-File is (always the case?)
+
+                # with very few exceptions (in case CMakeLists.txt tells Catkin to look for the
+                # Messages in another Folder)
+                
+                # TODO DL Maybe we can look inside the parent folders for the nearest
+                # CMakeLists.txt-File. The pkg_name is then the folder name, where the
+                # CMakeLists.txt-File is (always the case?)
                 if "/firos/" in  found_msg:
                     # Skip the Project itself
                     continue
@@ -130,9 +143,11 @@ class LibLoader:
                 clazz = getattr(module, module_msg)
                 return clazz
             except ImportError:
-                Log("WARNING", "Message {} was not found. Trying to load the Message-File in FIROS/msgs".format(module_msg))
+                Log("WARNING", "Message {} was not found.".format(module_msg)
+                    + "Trying to load the Message-File in FIROS/msgs")
             except AttributeError:
-                Log("WARNING", "Message {} was not found. Trying to load the Message-File in FIROS/msgs".format(module_msg))
+                Log("WARNING", "Message {} was not found.".format(module_msg)
+                    + "Trying to load the Message-File in FIROS/msgs")
 
 
 
@@ -145,7 +160,10 @@ class LibLoader:
                 # Disable Output, since genpy prints exceptions
                 sys.stdout = open(os.devnull, "w")
                 sys.stderr = open(os.devnull, "w")
-                retcode = MsgGenerator().generate_messages(module_name, [msgsFold + module_name + "/" + module_msg + ".msg"], msgsFold + module_name, search_path)
+                retcode = MsgGenerator().generate_messages( module_name,
+                                                            [msgsFold + module_name + "/"
+                                                                + module_msg + ".msg"],
+                                                            msgsFold + module_name, search_path)
             except Exception:
                 # Case we got an Exception -> retcode = 1 -> Error
                 retcode = 1
@@ -156,10 +174,12 @@ class LibLoader:
                 sys.stderr = sys.__stderr__
 
             if retcode == 1:
-                Log("WARNING", "Could not load Message {}/{}. Maybe it references other missing Messages?".format(module_name, module_msg))
+                Log("WARNING", "Could not load Message {}/{}.".format(module_name, module_msg)
+                    + "Maybe it references other missing Messages?")
             elif retcode == 0:
                 LibLoader.isGenerated = True
-                module = imp.load_source(module_msg, msgsFold + module_name + "/_" + module_msg + ".py")
+                module = imp.load_source(module_msg,
+                                        msgsFold + module_name + "/_" + module_msg + ".py")
                 clazz = getattr(module, module_msg)
                 Log("INFO", "Message {}/{} succesfully loaded.".format(module_name, module_msg))
                 return clazz
@@ -173,7 +193,8 @@ class LibLoader:
                 type_name = rostopic.get_topic_type(topic, blocking=False)[0]
                 if type_name:
                     clazz = roslib.message.get_message_class(type_name)
-                    Log("INFO", "Message {}/{} loaded via roslib.message!".format(module_name, module_msg))
+                    Log("INFO", "Message {}/{}".format(module_name, module_msg)
+                        + "loaded via roslib.message!")
                     return clazz
             except Exception:
                 pass

@@ -2,17 +2,23 @@
 #
 # Copyright (c) <2015> <Ikergune, Etxetar>
 #
-# Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files
-# (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge,
-# publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,
-# subject to the following conditions:
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
 #
-# The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
 #
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
-# FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-# WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
 __author__ = "Dominik Lux"
 __credits__ = ["Peter Detzner"]
@@ -75,14 +81,15 @@ class CbPublisher(Publisher):
 
     def publish(self, topic, rawMsg, msgDefintionDict):
         ''' This is the actual publish-Routine which updates and creates Entities on the
-            ContextBroker. It also keeps track via posted_history on already posted entities and topics
+            ContextBroker. It also keeps track via posted_history on already posted
+            entities and topics.
 
-            topic:   a string, corresponding to the topic in ros
-            rawMsg:  the raw data directly obtained from rospy
-            msgDefintionDict: The Definition as obtained directly from ROS-Messages
+            topic:              a string, corresponding to the topic in ros
+            rawMsg:             the raw data directly obtained from rospy
+            msgDefintionDict:   The Definition as obtained directly from ROS-Messages
 
-            We do not need to invoke something special here. This method gets called automatically,
-            after Firos received a Message from the ROS-World
+            We do not need to invoke something special here. This method gets called
+            automatically, after Firos received a Message from the ROS-World.
 
             TODO DL During Runtime an Entitiy might get deleted, check it here!
         '''
@@ -114,7 +121,9 @@ class CbPublisher(Publisher):
         # print(jsonStr)
 
         # Update attribute on ContextBroker
-        response = requests.post(self.CB_BASE_URL + obj["id"] + "/attrs", data=jsonStr, headers=self.CB_HEADER)
+        response = requests.post(self.CB_BASE_URL + obj["id"] + "/attrs",
+                                 data=jsonStr,
+                                 headers=self.CB_HEADER)
         self._responseCheck(response, attrAction=1, topEnt=topic)
 
 
@@ -142,7 +151,8 @@ class CbPublisher(Publisher):
                 Log("WARNING", "Could not create Entitiy {} in Contextbroker :".format(topEnt))
                 Log("WARNING", response.content)
             elif attrAction == 1:
-                Log("ERROR", "Cannot update attributes in Contextbroker for topic: {} :".format(topEnt))
+                Log("ERROR", "Cannot update attributes in "
+                    + "Contextbroker for topic: {} :".format(topEnt))
                 Log("ERROR", response.content)
             else:
                 Log("WARNING", "Could not delete Entitiy {} in Contextbroker :".format(topEnt))

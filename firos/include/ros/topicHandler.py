@@ -2,17 +2,23 @@
 #
 # Copyright (c) <2015> <Ikergune, Etxetar>
 #
-# Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files
-# (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge,
-# publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,
-# subject to the following conditions:
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
 #
-# The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
 #
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
-# FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-# WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
 __author__ = "Dominik Lux"
 __credits__ = ["Peter Detzner"]
@@ -107,13 +113,16 @@ def loadMsgHandlers(topics_data):
         if topics_data[topic][1].lower() == "subscriber":
             # Case it is a subscriber, add it in subscribers
             additionalArgsCallback = {"topic": topic} # Add addtional Infos about topic
-            ROS_SUBSCRIBER[topic] = rospy.Subscriber(topic, theclass, _publishToCBRoutine, additionalArgsCallback)
+            ROS_SUBSCRIBER[topic] = rospy.Subscriber(topic, theclass, _publishToCBRoutine,
+                                                    additionalArgsCallback)
             ROS_SUBSCRIBER_LAST_MESSAGE[topic] = None # No message currently published
         else:
             # Case it is a publisher, add it in publishers
-            ROS_PUBLISHER[topic] = rospy.Publisher(topic, theclass, queue_size=C.ROS_SUB_QUEUE_SIZE, latch=True)
+            ROS_PUBLISHER[topic] = rospy.Publisher(topic, theclass,
+                                                    queue_size=C.ROS_SUB_QUEUE_SIZE, latch=True)
 
-    # After initializing ROS-PUB/SUBs, intitialize ContextBroker-Subscriber based on ROS-Publishers for each robot
+    # After initializing ROS-PUB/SUBs, intitialize ContextBroker-Subscriber
+    # based on ROS-Publishers for each robot
     CloudPubSub.subscribe(ROS_PUBLISHER.keys(), ROS_TOPIC_TYPE, ROS_TOPIC_AS_DICT)
     Log("INFO", "\n")
     Log("INFO", "Subscribed to " + str(list(ROS_PUBLISHER.keys())) + "\n")
@@ -216,10 +225,12 @@ def instantiateROSMessage(obj, dataStruct):
                 if type(dataStruct['value'][attr]) is list:
                     l =[]
                     for it in range(len(dataStruct['value'][attr])):
-                        l.append(instantiateROSMessage(obj[attr][it], dataStruct['value'][attr][it]))
+                        l.append(instantiateROSMessage(obj[attr][it],
+                                                        dataStruct['value'][attr][it]))
                     setattr(instance, attr, l)
                 else:
-                    setattr(instance, attr, instantiateROSMessage(obj[attr], dataStruct['value'][attr]))
+                    setattr(instance, attr, instantiateROSMessage(obj[attr],
+                                                                    dataStruct['value'][attr]))
         return instance
     else:
         # Struct is {}:
@@ -268,8 +279,10 @@ def createConnectionListeners():
         /ROS_NODE_NAME/connect    --> std_msgs/String
         /ROS_NODE_NAME/disconnect --> std_msgs/String
     '''
-    subscribers.append(rospy.Subscriber(C.ROS_NODE_NAME + "/disconnect", std_msgs.msg.String, _robotDisconnection))
-    subscribers.append(rospy.Subscriber(C.ROS_NODE_NAME +"/connect", std_msgs.msg.String, _robotConnection))
+    subscribers.append(rospy.Subscriber(C.ROS_NODE_NAME + "/disconnect",
+                                        std_msgs.msg.String, _robotDisconnection))
+    subscribers.append(rospy.Subscriber(C.ROS_NODE_NAME +"/connect",
+                                        std_msgs.msg.String, _robotConnection))
 
 
 def _robotDisconnection(data):

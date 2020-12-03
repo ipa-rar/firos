@@ -4,17 +4,23 @@
 #
 # Copyright (c) <2015> <Ikergune, Etxetar>
 #
-# Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files
-# (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge,
-# publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,
-# subject to the following conditions:
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
 #
-# The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
 #
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
-# FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-# WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
 
 # ROSPY LOGS
@@ -56,10 +62,14 @@ if __name__ == '__main__':
     # Input Parsing
     parser = argparse.ArgumentParser()
     parser.add_argument('-P', action='store', dest='port', help='Set the Port of the Firos-Server')
-    parser.add_argument('--conf', action='store', dest='conf_Fold', help='Set the config-Folder for Firos')
-    parser.add_argument('--ros-port', action='store', dest='ros_port', help='Set the ROS-Port for Firos')
-    parser.add_argument('--ros-node-name', action='store', dest='ros_node_name', help='Set the ROS-Node-Name')
-    parser.add_argument('--loglevel', action='store', dest='loglevel', help='Set the LogLevel (INFO, WARNING, ERROR,  CRITICAL)')
+    parser.add_argument('--conf',   action='store', dest='conf_Fold',
+                                    help='Set the config-Folder for Firos')
+    parser.add_argument('--ros-port',   action='store', dest='ros_port',
+                                        help='Set the ROS-Port for Firos')
+    parser.add_argument('--ros-node-name',  action='store', dest='ros_node_name',
+                                            help='Set the ROS-Node-Name')
+    parser.add_argument('--loglevel',   action='store', dest='loglevel',
+                                        help='Set the LogLevel (INFO, WARNING, ERROR,  CRITICAL)')
 
 
     # Get Input
@@ -83,7 +93,8 @@ if __name__ == '__main__':
     from include.logger import Log, initLog
     from include.server.firosServer import FirosServer
 
-    from include.ros.topicHandler import RosTopicHandler, loadMsgHandlers, createConnectionListeners, initPubAndSub
+    from include.ros.topicHandler import (RosTopicHandler, loadMsgHandlers, initPubAndSub,
+                                            createConnectionListeners)
 
     # Overwrite global variables with command line arguments (iff set)
     if results.port is not None:

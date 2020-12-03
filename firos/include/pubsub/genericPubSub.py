@@ -92,10 +92,11 @@ class PubSub(object):
         '''
             This Routine imports all publisher and subscriber and saves them into the list.
 
-            We retreive here all classes which are in the subfolder (depending on the files location).
+            We retreive here all classes which are in the subfolder (depending on
+            the files location).
 
-            Each subfolder should contain an '__init__.py' and the corresponding Publishers and Subscribers
-            you want to add.
+            Each subfolder should contain an '__init__.py' and the corresponding
+            Publishers and Subscribers you want to add.
         '''
         folder = os.path.dirname(os.path.realpath(__file__))
         folderInfo = os.listdir(folder)

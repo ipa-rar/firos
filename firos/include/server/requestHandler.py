@@ -2,17 +2,23 @@
 #
 # Copyright (c) <2015> <Ikergune, Etxetar>
 #
-# Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files
-# (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge,
-# publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,
-# subject to the following conditions:
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
 #
-# The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
 #
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
-# FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-# WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
 __author__ = "Dominik Lux"
 __credits__ = ["Peter Detzner"]
@@ -39,7 +45,9 @@ except ImportError:
 from include.logger import Log
 from include.confManager import getRobots
 from include.ros.rosConfigurator import RosConfigurator
-from include.ros.topicHandler import RosTopicHandler, loadMsgHandlers, ROS_PUBLISHER, ROS_SUBSCRIBER, ROS_TOPIC_AS_DICT, ROS_SUBSCRIBER_LAST_MESSAGE
+from include.ros.topicHandler import (RosTopicHandler, loadMsgHandlers, ROS_PUBLISHER,
+                                        ROS_SUBSCRIBER, ROS_TOPIC_AS_DICT,
+                                        ROS_SUBSCRIBER_LAST_MESSAGE)
 from include.constants import Constants as C
 from include.FiwareObjectConverter.objectFiwareConverter import ObjectFiwareConverter
 
@@ -124,7 +132,8 @@ def listTopics(request, action):
 
 def onRobotData(request, action):
     ''' Returns the actual Content of the last sent Data  of this robot onto
-        the page. No Manipulation is done here. NOTE: only the data the robot published is shown here!
+        the page. No Manipulation is done here. NOTE: only the data the robot published
+        is shown here!
 
         Depending what is written after 'robot', specific content is published
     '''

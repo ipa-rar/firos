@@ -2,17 +2,23 @@
 #
 # Copyright (c) <2015> <Ikergune, Etxetar>
 #
-# Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files
-# (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge,
-# publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,
-# subject to the following conditions:
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
 #
-# The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
 #
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
-# FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-# WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
 import sys
 import json
@@ -46,15 +52,18 @@ def getRobots(refresh=False):
         # check if structure is as needed
         for key in topics_json.keys():
             if len(topics_json[key]) != 2:
-                Log("ERROR", "The topic: '{}', does not have a list of length 2 (topics.json)! \n\nExiting".format(key))
+                Log("ERROR", "The topic: '{}'".format(key)
+                    +", does not have a list of length 2 (topics.json)! \n\nExiting")
                 sys.exit(1)
 
             if not key.startswith("/"):
-                Log("ERROR", "The topic: '{}', does not start with '/'  (topics.json)! \n\nExiting".format(key))
+                Log("ERROR", "The topic: '{}'".format(key)
+                    +", does not start with '/'  (topics.json)! \n\nExiting")
                 sys.exit(1)
 
             if topics_json[key][1] not in ["publisher", "subscriber"]:
-                Log("ERROR", "The topic: '{}', does not specify publisher or subscriber (topics.json)! \n\nExiting".format(key))
+                Log("ERROR", "The topic: '{}'".format(key)
+                    +", does not specify publisher or subscriber (topics.json)! \n\nExiting")
                 sys.exit(1)
 
 

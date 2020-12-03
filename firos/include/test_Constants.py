@@ -174,7 +174,8 @@ class Test_Constants(unittest.TestCase):
         self.assertEqual(C.EP_SERVER_PORT, 1235)
         self.assertEqual(C.MAP_SERVER_PORT, 12345)
         self.assertEqual(C.ROSBRIDGE_PORT, 4321)
-        self.assertEqual(C.DATA, C.setConfiguration("../test_data/testConfigFiles/missContextBroker"))
+        self.assertEqual(C.DATA, C.setConfiguration("../test_data/testConfigFiles/"
+                                                    + "missContextBroker"))
         self.assertEqual(C.PUB_FREQUENCY, 1)
 
         self.assertEqual(C.ROS_NODE_NAME, "TestFIROS")
@@ -215,7 +216,8 @@ class Test_Constants(unittest.TestCase):
         self.assertEqual(C.EP_SERVER_PORT, 1235)
         self.assertEqual(C.MAP_SERVER_PORT, 12345)
         self.assertEqual(C.ROSBRIDGE_PORT, 4321)
-        self.assertEqual(C.DATA, C.setConfiguration("../test_data/testConfigFiles/missRosSubscriberQueue"))
+        self.assertEqual(C.DATA, C.setConfiguration("../test_data/testConfigFiles/"
+                                                    +"missRosSubscriberQueue"))
         self.assertEqual(C.PUB_FREQUENCY, 1)
 
         self.assertEqual(C.ROS_NODE_NAME, "TestFIROS")
@@ -237,7 +239,8 @@ class Test_Constants(unittest.TestCase):
         self.assertEqual(C.EP_SERVER_PORT, 1235)
         self.assertEqual(C.MAP_SERVER_PORT, 12345)
         self.assertEqual(C.ROSBRIDGE_PORT, 4321)
-        self.assertEqual(C.DATA, C.setConfiguration("../test_data/testConfigFiles/missPubFrequency"))
+        self.assertEqual(C.DATA, C.setConfiguration("../test_data/testConfigFiles/"
+                                                    +"missPubFrequency"))
         self.assertEqual(C.PUB_FREQUENCY, 0)
 
         self.assertEqual(C.ROS_NODE_NAME, "TestFIROS")
