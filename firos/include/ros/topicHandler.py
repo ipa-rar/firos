@@ -26,10 +26,8 @@ __maintainer__ = "Dominik Lux"
 __version__ = "0.0.1a"
 __status__ = "Developement"
 
-import os
-import rospy
-import importlib
 import time
+import rospy
 
 from include.logger import Log
 from include.constants import Constants as C

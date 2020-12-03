@@ -26,7 +26,6 @@ __maintainer__ = "Dominik Lux"
 
 import unittest
 
-import include.constants
 from include.constants import Constants
 
 class Test_Constants(unittest.TestCase):

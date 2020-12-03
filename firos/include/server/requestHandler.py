@@ -29,26 +29,23 @@ __status__ = "Developement"
 import re
 import cgi
 import json
-import requests
 try:
     # Python 3
-    from urllib.parse import urlparse, parse_qs
+    from urllib.parse import urlparse
     from http.server import BaseHTTPRequestHandler
     isPython3 = True
-
 except ImportError:
     # Python 2
     from BaseHTTPServer import BaseHTTPRequestHandler
-    from urlparse import urlparse, parse_qs
+    from urlparse import urlparse
     isPython3 = False
 
 from include.logger import Log
 from include.confManager import getRobots
 from include.ros.rosConfigurator import RosConfigurator
-from include.ros.topicHandler import (RosTopicHandler, loadMsgHandlers, ROS_PUBLISHER,
+from include.ros.topicHandler import (loadMsgHandlers, ROS_PUBLISHER,
                                         ROS_SUBSCRIBER, ROS_TOPIC_AS_DICT,
                                         ROS_SUBSCRIBER_LAST_MESSAGE)
-from include.constants import Constants as C
 from include.FiwareObjectConverter.objectFiwareConverter import ObjectFiwareConverter
 
 

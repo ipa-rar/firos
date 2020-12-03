@@ -32,14 +32,12 @@
 # logwarn
 
 # Import required Python code.
-import json
 import os
 import sys
-import copy
-import rospy
 import signal
 import argparse
 
+import rospy
 from include.constants import Constants as C
 
 

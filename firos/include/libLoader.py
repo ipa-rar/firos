@@ -26,10 +26,16 @@ import imp
 import importlib
 import sys
 
+try:
+    import roslib.message
+    import rostopic
+except ImportError:
+    pass
+
 # Add genpy to sys.path (This is not written as a module)
-sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "/genpy/src/")
 from genpy.generator import MsgGenerator
 from include.logger import Log
+sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "/genpy/src/")
 
 regex = re.compile(u'^(.*)(\\b.msg\\b)(.*)$')
 
@@ -188,8 +194,6 @@ class LibLoader:
 
             ##### 3: Our last resort, the roslib.message which might know this message!
             try:
-                import roslib.message
-                import rostopic
                 type_name = rostopic.get_topic_type(topic, blocking=False)[0]
                 if type_name:
                     clazz = roslib.message.get_message_class(type_name)

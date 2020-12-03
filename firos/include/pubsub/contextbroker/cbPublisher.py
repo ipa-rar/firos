@@ -26,12 +26,10 @@ __maintainer__ = "Dominik Lux"
 __version__ = "0.0.1a"
 __status__ = "Developement"
 
-import json
+
 import requests
-import os
 
 from include.logger import Log
-from include.constants import Constants as C
 from include.FiwareObjectConverter.objectFiwareConverter import ObjectFiwareConverter
 from include.pubsub.genericPubSub import Publisher
 

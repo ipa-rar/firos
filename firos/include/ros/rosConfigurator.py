@@ -26,7 +26,6 @@ import json
 import rostopic
 import rospy
 
-from include.logger import Log
 from include.constants import Constants as C
 
 

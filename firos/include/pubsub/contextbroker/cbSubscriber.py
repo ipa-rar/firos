@@ -27,9 +27,9 @@ __version__ = "0.0.1a"
 __status__ = "Developement"
 
 import time
-import requests
 import json
 import threading
+import requests
 try:
     # Python 3
     import _thread as thread

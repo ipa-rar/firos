@@ -22,16 +22,9 @@
 
 
 
-import os
+
 import json
-import netifaces
 import socket
-try:
-    # Python 3
-    from urllib.request import urlopen
-except ImportError:
-    # Python 2
-    from urllib2 import urlopen
 
 class Constants:
     configured = False
