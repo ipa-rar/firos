@@ -41,6 +41,8 @@ class Constants:
     ROS_NODE_NAME = "firos"
     ROS_SUB_QUEUE_SIZE = 10 
 
+    NGSI_LD = True
+
     @classmethod
     def setConfiguration(cls, path):
         try:

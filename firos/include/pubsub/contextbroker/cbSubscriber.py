@@ -338,7 +338,7 @@ class CBServer:
 
 
             obj = self.TypeValue()
-            ObjectFiwareConverter.fiware_to_obj(jsonData, obj, set_attr=True, use_meta_data=False, encoded=True)
+            ObjectFiwareConverter.fiware_to_obj(jsonData, obj, set_attr=True, use_meta_data=False, encoded=True, ngsi_ld=C.NGSI_LD)
             obj.id = obj.id.replace(".", "/")
             obj.type = obj.type.replace("%2F", "/")
             

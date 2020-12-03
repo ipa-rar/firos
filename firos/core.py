@@ -55,6 +55,7 @@ if __name__ == '__main__':
 
     # Input Parsing
     parser = argparse.ArgumentParser()
+    parser.add_argument('-v2', action='store_false', dest='ngsi_ld' ,help='Set the concrete used API to the old standard NGSI-v2')
     parser.add_argument('-P', action='store', dest='port', help='Set the Port of the Firos-Server')
     parser.add_argument('--conf', action='store', dest='conf_Fold', help='Set the config-Folder for Firos')
     parser.add_argument('--ros-port', action='store', dest='ros_port', help='Set the ROS-Port for Firos')
@@ -64,7 +65,7 @@ if __name__ == '__main__':
                     
     # Get Input
     results = parser.parse_args()
-    
+
     # At first determine the config-Folder location (either in firos/config or customly set)
     current_path = os.path.dirname(os.path.abspath(__file__))
     conf_path = current_path + "/../config"
@@ -100,6 +101,8 @@ if __name__ == '__main__':
     if results.loglevel is not None:
         C.LOGLEVEL = results.loglevel
 
+    if results.ngsi_ld is not None:
+        C.NGSI_LD = results.ngsi_ld
     
     # Starting Up!
     initLog()
