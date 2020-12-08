@@ -43,10 +43,10 @@ class Publisher(ABC):
 
     # Data which is added via config.json
     # This will be initialized before__init__() is even called!
-    configData = dict()
+    config_data = dict()
 
     @abc.abstractmethod
-    def publish(self, topic, rawMsg, msgDefinitions):
+    def publish(self, topic, raw_msg, msg_definitions):
         pass
 
     @abc.abstractmethod
@@ -62,10 +62,10 @@ class Subscriber(ABC):
 
     # Data which is added via config.json
     # This will be initialized before__init__() is even called!
-    configData = dict()
+    config_data = dict()
 
     @abc.abstractmethod
-    def subscribe(self, topicList, topicTypes, msgDefinitions):
+    def subscribe(self, topic_list, topic_types, msg_definitions):
         pass
 
     @abc.abstractmethod
@@ -98,21 +98,21 @@ class PubSub(object):
             Publishers and Subscribers you want to add.
         '''
         folder = os.path.dirname(os.path.realpath(__file__))
-        folderInfo = os.listdir(folder)
+        folder_info = os.listdir(folder)
 
 
         ### Get all subfolders (only 1 deeper)
         subfolders = {}
-        for fi in folderInfo:
-            if not fi.startswith("_") and os.path.isdir(folder + os.path.sep + fi):
-                subfolders[fi] = {}
+        for folder in folder_info:
+            if not folder.startswith("_") and os.path.isdir(folder + os.path.sep + folder):
+                subfolders[folder] = {}
 
         ### Get all Files inside those subfolders
         for i in subfolders.keys():
             for _, _, files in os.walk(folder + os.path.sep + i):
-                for f in files:
-                    if not f.startswith("_"):
-                        subfolders[i][f.split(".")[0]] = None
+                for file in files:
+                    if not file.startswith("_"):
+                        subfolders[i][file.split(".")[0]] = None
 
         ### Import the modules, defined in the files
         for fold in subfolders.keys():
@@ -128,7 +128,7 @@ class PubSub(object):
         for fold in subfolders.keys():
             for fil in subfolders[fold].keys():
                 # initialize config data
-                subfolders[fold][fil].configData = self._getPubSubConstants(fold)
+                subfolders[fold][fil].config_data = self._get_pub_sub_constants(fold)
                 if subfolders[fold][fil].__base__ is Subscriber:
                     # We found a Subscriber
                     self.subscribers.append(subfolders[fold][fil]())
@@ -141,7 +141,7 @@ class PubSub(object):
 
         pass
 
-    def _getPubSubConstants(self, fold):
+    def _get_pub_sub_constants(self, fold):
         '''
             Depending on the Folder-Name the corresponding entry of Constants is loaded
         '''
@@ -151,12 +151,12 @@ class PubSub(object):
             return None
 
 
-    def publish(self, topic, rawMsg, msgDefinitions):
+    def publish(self, topic, raw_msg, msg_definitions):
         '''
             Call publish on each Publisher
         '''
         for pub in self.publishers:
-            pub.publish(topic, rawMsg, msgDefinitions)
+            pub.publish(topic, raw_msg, msg_definitions)
 
 
     def unpublish(self):
@@ -166,12 +166,12 @@ class PubSub(object):
         for pub in self.publishers:
             pub.unpublish()
 
-    def subscribe(self, topicList, topicTypes, msgDefinitions):
+    def subscribe(self, topic_list, topic_types, msg_definitions):
         '''
             Call subscribe on each Subscriber
         '''
         for sub in self.subscribers:
-            sub.subscribe(topicList, topicTypes, msgDefinitions)
+            sub.subscribe(topic_list, topic_types, msg_definitions)
 
     def unsubscribe(self):
         '''

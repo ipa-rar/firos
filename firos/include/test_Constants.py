@@ -28,7 +28,7 @@ import unittest
 
 from include.constants import Constants
 
-class Test_Constants(unittest.TestCase):
+class TestConstants(unittest.TestCase):
 
     def tearDown(self):
         '''
@@ -47,7 +47,7 @@ class Test_Constants(unittest.TestCase):
         C.PATH = None
         C.configured = False
 
-    def test_Standard_Parameters(self):
+    def test_standard_parameters(self):
         C = Constants
 
         self.assertEqual(C.LOGLEVEL, "INFO")
@@ -66,17 +66,17 @@ class Test_Constants(unittest.TestCase):
 
 
 
-    def test_setConfiguration_None(self):
-        self.assertEqual({}, Constants.setConfiguration(None))
+    def test_set_configuration_none(self):
+        self.assertEqual({}, Constants.set_configuration(None))
 
-    def test_setConfiguration_EmptyString(self):
-        self.assertEqual({}, Constants.setConfiguration(""))
+    def test_set_configuration_empty_string(self):
+        self.assertEqual({}, Constants.set_configuration(""))
 
-    def test_setConfiguration_Non_Existent_Path(self):
-        self.assertEqual({}, Constants.setConfiguration("NON_EXISTENT_PATH"))
+    def test_set_configuration_non_existent_path(self):
+        self.assertEqual({}, Constants.set_configuration("NON_EXISTENT_PATH"))
 
 
-    def test_Constants_With_Non_Existent_Config_JSON(self):
+    def test_constants_with_non_existent_config_json(self):
         C = Constants
         Constants.configured = False
         C.init("NON_EXISTENT_PATH")
@@ -97,7 +97,7 @@ class Test_Constants(unittest.TestCase):
         self.assertEqual(C.configured, True)
 
 
-    def test_Constants_With_Missing_Endpoint(self):
+    def test_constants_with_missing_endpoint(self):
         C = Constants
         Constants.configured = False
         C.init("../test_data/testConfigFiles/missEndpoint")
@@ -108,7 +108,7 @@ class Test_Constants(unittest.TestCase):
         self.assertEqual(C.EP_SERVER_PORT, None)
         self.assertEqual(C.MAP_SERVER_PORT, 12345)
         self.assertEqual(C.ROSBRIDGE_PORT, 4321)
-        self.assertEqual(C.DATA, C.setConfiguration("../test_data/testConfigFiles/missEndpoint"))
+        self.assertEqual(C.DATA, C.set_configuration("../test_data/testConfigFiles/missEndpoint"))
         self.assertEqual(C.PUB_FREQUENCY, 1)
 
         self.assertEqual(C.ROS_NODE_NAME, "TestFIROS")
@@ -120,7 +120,7 @@ class Test_Constants(unittest.TestCase):
 
 
 
-    def test_Constants_With_Missing_log_level(self):
+    def test_constants_with_missing_log_level(self):
         C = Constants
         Constants.configured = False
         C.init("../test_data/testConfigFiles/missLogLevel")
@@ -131,7 +131,7 @@ class Test_Constants(unittest.TestCase):
         self.assertEqual(C.EP_SERVER_PORT, 1235)
         self.assertEqual(C.MAP_SERVER_PORT, 12345)
         self.assertEqual(C.ROSBRIDGE_PORT, 4321)
-        self.assertEqual(C.DATA, C.setConfiguration("../test_data/testConfigFiles/missLogLevel"))
+        self.assertEqual(C.DATA, C.set_configuration("../test_data/testConfigFiles/missLogLevel"))
         self.assertEqual(C.PUB_FREQUENCY, 1)
 
         self.assertEqual(C.ROS_NODE_NAME, "TestFIROS")
@@ -141,7 +141,7 @@ class Test_Constants(unittest.TestCase):
         self.assertEqual(C.configured, True)
 
 
-    def test_Constants_With_Missing_server_port(self):
+    def test_constants_with_missing_server_port(self):
         C = Constants
         Constants.configured = False
         C.init("../test_data/testConfigFiles/missServerPort")
@@ -152,7 +152,7 @@ class Test_Constants(unittest.TestCase):
         self.assertEqual(C.EP_SERVER_PORT, 1235)
         self.assertEqual(C.MAP_SERVER_PORT, 10100)
         self.assertEqual(C.ROSBRIDGE_PORT, 4321)
-        self.assertEqual(C.DATA, C.setConfiguration("../test_data/testConfigFiles/missServerPort"))
+        self.assertEqual(C.DATA, C.set_configuration("../test_data/testConfigFiles/missServerPort"))
         self.assertEqual(C.PUB_FREQUENCY, 1)
 
         self.assertEqual(C.ROS_NODE_NAME, "TestFIROS")
@@ -162,7 +162,7 @@ class Test_Constants(unittest.TestCase):
         self.assertEqual(C.configured, True)
 
 
-    def test_Constants_With_Missing_ContextBroker(self):
+    def test_constants_with_missing_contextbroker(self):
         C = Constants
         Constants.configured = False
         C.init("../test_data/testConfigFiles/missContextBroker")
@@ -173,7 +173,7 @@ class Test_Constants(unittest.TestCase):
         self.assertEqual(C.EP_SERVER_PORT, 1235)
         self.assertEqual(C.MAP_SERVER_PORT, 12345)
         self.assertEqual(C.ROSBRIDGE_PORT, 4321)
-        self.assertEqual(C.DATA, C.setConfiguration("../test_data/testConfigFiles/"
+        self.assertEqual(C.DATA, C.set_configuration("../test_data/testConfigFiles/"
                                                     + "missContextBroker"))
         self.assertEqual(C.PUB_FREQUENCY, 1)
 
@@ -184,7 +184,7 @@ class Test_Constants(unittest.TestCase):
         self.assertEqual(C.configured, True)
 
 
-    def test_Constants_With_Missing_node_name(self):
+    def test_constants_with_missing_node_name(self):
         C = Constants
         Constants.configured = False
         C.init("../test_data/testConfigFiles/missNodeName")
@@ -195,7 +195,7 @@ class Test_Constants(unittest.TestCase):
         self.assertEqual(C.EP_SERVER_PORT, 1235)
         self.assertEqual(C.MAP_SERVER_PORT, 12345)
         self.assertEqual(C.ROSBRIDGE_PORT, 4321)
-        self.assertEqual(C.DATA, C.setConfiguration("../test_data/testConfigFiles/missNodeName"))
+        self.assertEqual(C.DATA, C.set_configuration("../test_data/testConfigFiles/missNodeName"))
         self.assertEqual(C.PUB_FREQUENCY, 1)
 
         self.assertEqual(C.ROS_NODE_NAME, "firos")
@@ -204,7 +204,7 @@ class Test_Constants(unittest.TestCase):
         self.assertEqual(C.PATH, "../test_data/testConfigFiles/missNodeName")
         self.assertEqual(C.configured, True)
 
-    def test_Constants_With_Missing_ros_subscriber_queue(self):
+    def test_constants_with_missing_ros_subscriber_queue(self):
         C = Constants
         Constants.configured = False
         C.init("../test_data/testConfigFiles/missRosSubscriberQueue")
@@ -215,7 +215,7 @@ class Test_Constants(unittest.TestCase):
         self.assertEqual(C.EP_SERVER_PORT, 1235)
         self.assertEqual(C.MAP_SERVER_PORT, 12345)
         self.assertEqual(C.ROSBRIDGE_PORT, 4321)
-        self.assertEqual(C.DATA, C.setConfiguration("../test_data/testConfigFiles/"
+        self.assertEqual(C.DATA, C.set_configuration("../test_data/testConfigFiles/"
                                                     +"missRosSubscriberQueue"))
         self.assertEqual(C.PUB_FREQUENCY, 1)
 
@@ -227,7 +227,7 @@ class Test_Constants(unittest.TestCase):
 
 
 
-    def test_Constants_With_Missing_Pub_Frequency(self):
+    def test_constants_with_missing_pub_frequency(self):
         C = Constants
         Constants.configured = False
         C.init("../test_data/testConfigFiles/missPubFrequency")
@@ -238,7 +238,7 @@ class Test_Constants(unittest.TestCase):
         self.assertEqual(C.EP_SERVER_PORT, 1235)
         self.assertEqual(C.MAP_SERVER_PORT, 12345)
         self.assertEqual(C.ROSBRIDGE_PORT, 4321)
-        self.assertEqual(C.DATA, C.setConfiguration("../test_data/testConfigFiles/"
+        self.assertEqual(C.DATA, C.set_configuration("../test_data/testConfigFiles/"
                                                     +"missPubFrequency"))
         self.assertEqual(C.PUB_FREQUENCY, 0)
 
@@ -249,7 +249,7 @@ class Test_Constants(unittest.TestCase):
         self.assertEqual(C.configured, True)
 
 
-    def test_Constants_With_Missing_Ros_Bridge(self):
+    def test_constants_with_missing_ros_bridge(self):
         C = Constants
         Constants.configured = False
         C.init("../test_data/testConfigFiles/missRosBridge")
@@ -260,7 +260,7 @@ class Test_Constants(unittest.TestCase):
         self.assertEqual(C.EP_SERVER_PORT, 1235)
         self.assertEqual(C.MAP_SERVER_PORT, 12345)
         self.assertEqual(C.ROSBRIDGE_PORT, 9090)
-        self.assertEqual(C.DATA, C.setConfiguration("../test_data/testConfigFiles/missRosBridge"))
+        self.assertEqual(C.DATA, C.set_configuration("../test_data/testConfigFiles/missRosBridge"))
         self.assertEqual(C.PUB_FREQUENCY, 1)
 
         self.assertEqual(C.ROS_NODE_NAME, "TestFIROS")
@@ -270,7 +270,7 @@ class Test_Constants(unittest.TestCase):
         self.assertEqual(C.configured, True)
 
 
-    def test_Constants_With_minimal_Configuration(self):
+    def test_constants_with_minimal_configuration(self):
         C = Constants
         Constants.configured = False
         C.init("../test_data/testConfigFiles/minimal")
@@ -281,7 +281,7 @@ class Test_Constants(unittest.TestCase):
         self.assertEqual(C.EP_SERVER_PORT, None)
         self.assertEqual(C.MAP_SERVER_PORT, 10100)
         self.assertEqual(C.ROSBRIDGE_PORT, 9090)
-        self.assertEqual(C.DATA, C.setConfiguration("../test_data/testConfigFiles/minimal"))
+        self.assertEqual(C.DATA, C.set_configuration("../test_data/testConfigFiles/minimal"))
         self.assertEqual(C.PUB_FREQUENCY, 0)
 
         self.assertEqual(C.ROS_NODE_NAME, "firos")

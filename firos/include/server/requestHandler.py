@@ -33,17 +33,17 @@ try:
     # Python 3
     from urllib.parse import urlparse
     from http.server import BaseHTTPRequestHandler
-    isPython3 = True
+    IS_PYTHON_3 = True
 except ImportError:
     # Python 2
     from BaseHTTPServer import BaseHTTPRequestHandler
     from urlparse import urlparse
-    isPython3 = False
+    IS_PYTHON_3 = False
 
-from include.logger import Log
-from include.confManager import getRobots
+from include.logger import log
+from include.confManager import get_robots
 from include.ros.rosConfigurator import RosConfigurator
-from include.ros.topicHandler import (loadMsgHandlers, ROS_PUBLISHER,
+from include.ros.topicHandler import (load_msg_handlers, ROS_PUBLISHER,
                                         ROS_SUBSCRIBER, ROS_TOPIC_AS_DICT,
                                         ROS_SUBSCRIBER_LAST_MESSAGE)
 from include.FiwareObjectConverter.objectFiwareConverter import ObjectFiwareConverter
@@ -55,22 +55,22 @@ class RequestHandler(BaseHTTPRequestHandler):
         Requests and deligates them further to the specific ones. Firos
         allows some extra operations here like Connect and Disconnect.
     '''
-    def do_GET(self):
+    def do_get(self):
         ''' Case: only a GET Request
         '''
         path = urlparse("http://localhost" + self.path).path
-        action = getAction(path, "GET")
+        action = get_action(path, "GET")
         if action is not None:
             action["action"](self, action)
         else:
             end_request(self, ('Content-type', 'text/html'), 200, "Firos is running!")
         return
 
-    def do_POST(self):
+    def do_post(self):
         ''' Case: only a POST Requst
         '''
         path = urlparse("http://localhost" + self.path).path
-        action = getAction(path, "POST")
+        action = get_action(path, "POST")
         if action is not None:
             action["action"](self, action)
         else:
@@ -78,7 +78,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         return
 
 
-def getPostParams(request):
+def get_post_params(request):
     ''' Returns from the given request its parameters which were
         posted prior.
     '''
@@ -96,7 +96,7 @@ def getPostParams(request):
         return {}
 
 
-def getAction(path, method):
+def get_action(path, method):
     ## \brief URL checker to find what action to execute
     # \param url string
     # \param HTTP method
@@ -110,11 +110,11 @@ def getAction(path, method):
 #############################   Request Mapping   #############################
 ###############################################################################
 
-def listTopics(request, action):
+def list_topics(request, action):
     ''' Generates a list of all topics (depending on RosConfigurator, confManager)
         and returns them back as json
     '''
-    robots = getRobots(False)
+    robots = get_robots(False)
     data = []
     for topic in robots.keys():
         robot_data = {"topic": topic,
@@ -127,7 +127,7 @@ def listTopics(request, action):
     end_request(request, ('Content-Type', 'application/json'), 200, json.dumps(data))
 
 
-def onRobotData(request, action):
+def on_robot_data(request, action):
     ''' Returns the actual Content of the last sent Data  of this robot onto
         the page. No Manipulation is done here. NOTE: only the data the robot published
         is shown here!
@@ -137,11 +137,11 @@ def onRobotData(request, action):
 
     name = request.path[6:]
     if name in ROS_SUBSCRIBER_LAST_MESSAGE:
-        lastPubData = ROS_SUBSCRIBER_LAST_MESSAGE[name]
-        if lastPubData is not None:
-            obj = {s: getattr(lastPubData, s, None) for s in lastPubData.__slots__}
+        last_pub_data = ROS_SUBSCRIBER_LAST_MESSAGE[name]
+        if last_pub_data is not None:
+            obj = {s: getattr(last_pub_data, s, None) for s in last_pub_data.__slots__}
             obj["id"] = name
-            obj["type"] = lastPubData._type
+            obj["type"] = last_pub_data._type
             json = ObjectFiwareConverter.obj2Fiware(obj, dataTypeDict=ROS_TOPIC_AS_DICT[name], ignorePythonMetaData=True, ind=None)
         else:
             json = ""
@@ -154,20 +154,20 @@ def onRobotData(request, action):
     end_request(request, ('Content-Type', 'application/json'), 200, json)
 
 
-def onConnect(request, action):
+def on_connect(request, action):
     ''' This resets firos into its original state
 
         TODO DL reset, instead of connect?
         TODO DL Add real connect for only one Robot?
     '''
-    Log("INFO", "Connecting topics")
-    loadMsgHandlers(RosConfigurator.systemTopics(True))
+    log("INFO", "Connecting topics")
+    load_msg_handlers(RosConfigurator.system_topics(True))
 
     # Return Success
     end_request(request, None, 200, "")
 
 
-def onDisConnect(request, action):
+def on_disconnect(request, action):
     ''' Removes the robot specified via url like
         '/disconnect/ROBOT_ID' from ROS-Publisher and
         Ros-Subscriber
@@ -175,13 +175,13 @@ def onDisConnect(request, action):
         We only are here when the URl is like:
         '/disconnect/ROBOT_ID'
     '''
-    partURL = request.path
+    part_url = request.path
     # If at the end is a slash we remove it simply
-    if "/" is partURL[-1]:
-        partURL = partURL[:-1]
+    if "/" is part_url[-1]:
+        part_url = part_url[:-1]
 
     # Get ROBOT_ID, which is the last element
-    topic = partURL[11:] # Get everything after "/disconnect"
+    topic = part_url[11:] # Get everything after "/disconnect"
 
 
 
@@ -189,14 +189,14 @@ def onDisConnect(request, action):
     if topic in ROS_PUBLISHER:
         ROS_PUBLISHER[topic].unregister()
         del ROS_PUBLISHER[topic]
-        Log("INFO", "Disconnecting publisher on '{}'".format(topic))
-        RosConfigurator.removeTopic(topic)
+        log("INFO", "Disconnecting publisher on '{}'".format(topic))
+        RosConfigurator.remove_topic(topic)
 
     if topic in ROS_SUBSCRIBER:
         ROS_SUBSCRIBER[topic].unregister()
         del ROS_SUBSCRIBER[topic]
-        Log("INFO", "Disconnecting subscriber on '{}'".format(topic))
-        RosConfigurator.removeTopic(topic)
+        log("INFO", "Disconnecting subscriber on '{}'".format(topic))
+        RosConfigurator.remove_topic(topic)
 
     # Return success
     end_request(request, None, 200, "")
@@ -206,11 +206,11 @@ def onDisConnect(request, action):
 # Mapper to the methods
 MAPPER = {
     "GET": [
-        {"regexp": "^/topics/*$", "action": listTopics},
-        {"regexp": "^/topic/.*$", "action": onRobotData}],
+        {"regexp": "^/topics/*$", "action": list_topics},
+        {"regexp": "^/topic/.*$", "action": on_robot_data}],
     "POST": [
-        {"regexp": "^/connect/*$", "action": onConnect},
-        {"regexp": "^/disconnect/.*$", "action": onDisConnect}
+        {"regexp": "^/connect/*$", "action": on_connect},
+        {"regexp": "^/disconnect/.*$", "action": on_disconnect}
     ]
 }
 
@@ -223,7 +223,7 @@ def end_request(request, header, status, content):
     if header is not None:
         request.send_header(header[0], header[1])
     request.end_headers()
-    if isPython3:
+    if IS_PYTHON_3:
         request.wfile.write(bytes(content, "utf-8"))
     else:
         request.wfile.write(bytes(content))

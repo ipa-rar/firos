@@ -15,7 +15,7 @@ class SomeExampleSubscriber(Subscriber):
             Here you can do things that need to be initialized.
 
             You can use the data provided by the 'config.json' here which can be retreived via:
-            """self.configData""". This is not None, as long as in config.json a key exists, which
+            """self.config_data""". This is not None, as long as in config.json a key exists, which
             has the same name as the subfolder this File is in.
 
             You can also use some other constants in:
@@ -24,7 +24,7 @@ class SomeExampleSubscriber(Subscriber):
 
 
 
-    def subscribe(self, topicList, topicTypes, msgDefinitions):
+    def subscribe(self, topic_list, topic_types, msg_definitions):
         '''
             Here goes the Subscription Routine
             This Routine needs to make sure it that it be called somehow from an extern Signal

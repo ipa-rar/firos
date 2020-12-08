@@ -38,13 +38,13 @@ PRIORITIES = {
     'INFO': 0
 }
 
-_levelId = None
-handler = None
+_LEVEL_ID = None
+HANDLER = None
 
-def initLog():
-    ''' Sets _levelID and handler
+def init_log():
+    ''' Sets _LEVEL_ID and HANDLER
     '''
-    global _levelId, handler
+    global _LEVEL_ID, HANDLER
     if C.LOGLEVEL == 'CRITICAL':
         _logger.setLevel(logging.CRITICAL)
     elif C.LOGLEVEL == 'ERROR':
@@ -57,26 +57,26 @@ def initLog():
         _logger.setLevel(logging.INFO)
 
     if C.LOGLEVEL == "NONE":
-        _levelId = -1
+        _LEVEL_ID = -1
     else:
-        _levelId = PRIORITIES[C.LOGLEVEL]
+        _LEVEL_ID = PRIORITIES[C.LOGLEVEL]
 
     if os.path.exists(SYSLOG_ADDRESS):
-        handler = logging.handlers.SysLogHandler(address=SYSLOG_ADDRESS)
-        _logger.addHandler(handler)
+        HANDLER = logging.handlers.SysLogHandler(address=SYSLOG_ADDRESS)
+        _logger.addHandler(HANDLER)
     else:
-        handler = None
+        HANDLER = None
 
-def Log(level, *args):
+def log(level, *args):
     ## \brief Logging function
     # \param Log Level (INFO, DEBUG, WARNING, ERROR, CRITICAL)
     # \param Logging data
-    if PRIORITIES[level] >= _levelId:
+    if PRIORITIES[level] >= _LEVEL_ID:
         text = ""
         for arg in args:
             text = text + " " + str(arg)
         text = text[1:]
-        if handler is not None:
+        if HANDLER is not None:
             if level == 'CRITICAL':
                 _logger.critical(text)
             elif level == 'ERROR':

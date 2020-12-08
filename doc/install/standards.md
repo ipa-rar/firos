@@ -65,7 +65,7 @@ class SomeExamplePublisher(Publisher):
     def __init__(self):
       pass
 
-    def publish(self, topic, rawMsg, msgDefinitions):
+    def publish(self, topic, raw_msg, msg_definitions):
         pass
 
     def unpublish(self):
@@ -79,7 +79,7 @@ more details and what each Parameter contains, please follow the comments in the
 The `unpublish`-method is called once. Exactly then, when FIROS wants to shut down. Does your standard need to know that
 FIROS is shutting down? Then implement this appropriately!
 
-The `self`-instance also contains your custom described configuration and can be accessed via : `self.configData`.
+The `self`-instance also contains your custom described configuration and can be accessed via : `self.config_data`.
 **NOTE** It returns `None` if nothing was specified.
 
 ## Writing the first Subscriber
@@ -96,7 +96,7 @@ class SomeExampleSubscriber(Subscriber):
     def __init__(self):
       pass
 
-    def subscribe(self, topicList, msgDefinitions):
+    def subscribe(self, topic_list, msg_definitions):
         pass
 
     def unsubscribe(self):
@@ -117,7 +117,7 @@ The received Messages need to be converted into a special class which can be dir
 After the received Message is converted correctly, you can publish it via:
 
 ```python
-RosTopicHandler.publish(topic, convertedData, dataStruct):
+RosTopicHandler.publish(topic, converted_data, data_struct):
 ```
 
 and it should be published in the ROS-World automatically!
@@ -128,7 +128,7 @@ As in Publisher, the `unsubscribe`-method is called during shut down. If your st
 routine implement it here.
 
 **NOTE** The `self`-instance here also contains your custom described configuration and can be accessed via :
-`self.configData`. It returns `None` if nothing was specified!
+`self.config_data`. It returns `None` if nothing was specified!
 
 # Remarks
 

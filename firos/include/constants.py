@@ -43,7 +43,7 @@ class Constants:
     ROS_SUB_QUEUE_SIZE = 10
 
     @classmethod
-    def setConfiguration(cls, path):
+    def set_configuration(cls, path):
         try:
             data = json.load(open(path + "/config.json"))
             return data[data["environment"]]
@@ -56,34 +56,34 @@ class Constants:
             cls.configured = True
             cls.PATH = path
 
-            configData = cls.setConfiguration(path)
-            cls.DATA = configData
+            config_data = cls.set_configuration(path)
+            cls.DATA = config_data
 
-            if "log_level" in configData:
-                cls.LOGLEVEL = configData["log_level"]
+            if "log_level" in config_data:
+                cls.LOGLEVEL = config_data["log_level"]
 
-            if "server" in configData and "port" in configData["server"]:
-               cls. MAP_SERVER_PORT = configData["server"]["port"]
+            if "server" in config_data and "port" in config_data["server"]:
+               cls. MAP_SERVER_PORT = config_data["server"]["port"]
 
-            if "node_name" in configData:
-                cls.ROS_NODE_NAME = configData["node_name"]
+            if "node_name" in config_data:
+                cls.ROS_NODE_NAME = config_data["node_name"]
 
-            if "ros_subscriber_queue" in configData:
-                cls.ROS_SUB_QUEUE_SIZE = int(configData["ros_subscriber_queue"])
+            if "ros_subscriber_queue" in config_data:
+                cls.ROS_SUB_QUEUE_SIZE = int(config_data["ros_subscriber_queue"])
 
-            if "endpoint" in configData and "address" in configData["endpoint"]:
-                    cls.EP_SERVER_ADRESS = configData["endpoint"]["address"]
+            if "endpoint" in config_data and "address" in config_data["endpoint"]:
+                    cls.EP_SERVER_ADRESS = config_data["endpoint"]["address"]
             else:
                 # If not set, we get ourselves the ip-address
-                s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-                s.connect(("8.8.8.8", 80))
-                cls.EP_SERVER_ADRESS = s.getsockname()[0]
+                sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+                sock.connect(("8.8.8.8", 80))
+                cls.EP_SERVER_ADRESS = sock.getsockname()[0]
 
-            if "endpoint" in configData and "port" in configData["endpoint"]:
-                    cls.EP_SERVER_PORT = int(configData["endpoint"]["port"])
+            if "endpoint" in config_data and "port" in config_data["endpoint"]:
+                    cls.EP_SERVER_PORT = int(config_data["endpoint"]["port"])
 
-            if "rosbridge_port" in configData:
-                cls.ROSBRIDGE_PORT = int(configData["rosbridge_port"])
+            if "rosbridge_port" in config_data:
+                cls.ROSBRIDGE_PORT = int(config_data["rosbridge_port"])
 
-            if "pub_frequency" in configData:
-                cls.PUB_FREQUENCY = int(configData["pub_frequency"])
+            if "pub_frequency" in config_data:
+                cls.PUB_FREQUENCY = int(config_data["pub_frequency"])

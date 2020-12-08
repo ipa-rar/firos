@@ -25,12 +25,12 @@ import json
 import copy
 import traceback
 
-from include.logger import Log
+from include.logger import log
 from include.ros.rosConfigurator import RosConfigurator
 from include.constants import Constants as C
 
 
-def getRobots(refresh=False):
+def get_robots(refresh=False):
     ''' This retrieves the current configuration from FIROS.
         Here we load the `robots.json` and the 'whitelist.json'
 
@@ -41,28 +41,28 @@ def getRobots(refresh=False):
     '''
     try:
         # Retrieves the whitelist.json. If it does not exists, it returns all topics.
-        topics_regex = copy.deepcopy(RosConfigurator.systemTopics(refresh))
+        topics_regex = copy.deepcopy(RosConfigurator.system_topics(refresh))
 
         # Retrieves the robots.json.
-        topics_json = getTopicsByJson()
+        topics_json = get_topics_by_json()
         if len(topics_json) == 0:
-            Log("ERROR", "The file 'topics.json' is either empty or does not exist!\n\nExiting")
+            log("ERROR", "The file 'topics.json' is either empty or does not exist!\n\nExiting")
             sys.exit(1)
 
         # check if structure is as needed
         for key in topics_json.keys():
             if len(topics_json[key]) != 2:
-                Log("ERROR", "The topic: '{}'".format(key)
+                log("ERROR", "The topic: '{}'".format(key)
                     +", does not have a list of length 2 (topics.json)! \n\nExiting")
                 sys.exit(1)
 
             if not key.startswith("/"):
-                Log("ERROR", "The topic: '{}'".format(key)
+                log("ERROR", "The topic: '{}'".format(key)
                     +", does not start with '/'  (topics.json)! \n\nExiting")
                 sys.exit(1)
 
             if topics_json[key][1] not in ["publisher", "subscriber"]:
-                Log("ERROR", "The topic: '{}'".format(key)
+                log("ERROR", "The topic: '{}'".format(key)
                     +", does not specify publisher or subscriber (topics.json)! \n\nExiting")
                 sys.exit(1)
 
@@ -74,13 +74,13 @@ def getRobots(refresh=False):
 
         return topics
 
-    except Exception as e:
+    except Exception as exception:
         traceback.print_exc()
-        Log("ERROR", e)
+        log("ERROR", exception)
         return {}
 
 
-def getTopicsByJson():
+def get_topics_by_json():
     ''' Load the 'topics.json'-File
     '''
     try:

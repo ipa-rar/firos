@@ -29,9 +29,9 @@ import rospy
 from include.constants import Constants as C
 
 
-entries = [] # Entries we found in the ROS-World
-whitelist = {} # The Current Whitelist FIROS is currently using
-robots = {} # The dictionary containing: robots["topics"] = [MessageType, pubSub]
+ENTRIES = [] # Entries we found in the ROS-World
+WHITELIST = {} # The Current Whitelist FIROS is currently using
+ROBOTS = {} # The dictionary containing: robots["topics"] = [MessageType, pubSub]
 
 class RosConfigurator:
     '''
@@ -40,38 +40,38 @@ class RosConfigurator:
     '''
 
     @staticmethod
-    def getAllTopics(refresh=True):
+    def get_all_topics(refresh=True):
         '''
             this retrieves all Entries/Topics found in the current
             ROS-World. The Parameter, refresh, indicates, whether we want to
             update our current information abour the entries or not
         '''
-        global entries
-        if refresh or len(entries) == 0:
-            listOfData = rospy.get_published_topics()
-            entries = [item for sublist in listOfData for item in sublist if item.startswith("/")]
+        global ENTRIES
+        if refresh or len(ENTRIES) == 0:
+            list_of_data = rospy.get_published_topics()
+            ENTRIES = [item for sublist in list_of_data for item in sublist if item.startswith("/")]
 
-        return entries
+        return ENTRIES
 
 
     @staticmethod
-    def getWhiteList(restore=False):
+    def get_white_list(restore=False):
         '''
             This retrieves the Whitelist.json Configuration
             and overwrites the data, depending on the restore-Flag
         '''
-        global whitelist
-        if whitelist == {} or restore:
+        global WHITELIST
+        if WHITELIST == {} or restore:
             if not os.path.isfile(C.PATH + "/whitelist.json"):
                 return {}
             json_path = C.PATH + "/whitelist.json"
-            whitelist = json.load(open(json_path))
+            WHITELIST = json.load(open(json_path))
 
-        return whitelist
+        return WHITELIST
 
 
     @staticmethod
-    def systemTopics(refresh=False, restore=False):
+    def system_topics(refresh=False, restore=False):
         '''
             This generates the actual robots-Structure
             At First the Regex-Expressions are generated, then the Robot with the
@@ -81,31 +81,31 @@ class RosConfigurator:
             restore: Restores the Whitelist to the original Whitelist.json-File
                      if set to True
         '''
-        global entries
-        global whitelist
-        global robots
+        global ENTRIES
+        global WHITELIST
+        global ROBOTS
         if refresh:
             # Only Update robots if we want to
-            entries = RosConfigurator.getAllTopics(refresh=refresh)
-            whitelist = RosConfigurator.getWhiteList(restore=restore)
+            ENTRIES = RosConfigurator.get_all_topics(refresh=refresh)
+            WHITELIST = RosConfigurator.get_white_list(restore=restore)
 
             # Create the robots Structure
             _robots = {}
 
-            if "publisher" in whitelist:
-                for regex in whitelist["publisher"]:
-                    RosConfigurator.addRobots(_robots, regex, entries, "publisher")
+            if "publisher" in WHITELIST:
+                for regex in WHITELIST["publisher"]:
+                    RosConfigurator.add_robots(_robots, regex, ENTRIES, "publisher")
 
-            if "subscriber" in whitelist:
-                for regex in whitelist["subscriber"]:
-                    RosConfigurator.addRobots(_robots, regex, entries, "subscriber")
+            if "subscriber" in WHITELIST:
+                for regex in WHITELIST["subscriber"]:
+                    RosConfigurator.add_robots(_robots, regex, ENTRIES, "subscriber")
 
-            robots = _robots
-        return robots
+            ROBOTS = _robots
+        return ROBOTS
 
 
     @staticmethod
-    def addRobots(robots, regex, entries, pubsub):
+    def add_robots(robots, regex, entries, pubsub):
         '''
             This adds the Entry in the complex robots dictionary
             We iterate over each entry and initialize the robots-dict
@@ -129,36 +129,36 @@ class RosConfigurator:
 
 
     @staticmethod
-    def removeTopic(topic):
+    def remove_topic(topic):
         '''
             This removes the topic
         '''
-        global robots
-        if topic in robots:
-            del robots[topic]
+        global ROBOTS
+        if topic in ROBOTS:
+            del ROBOTS[topic]
 
 
     @staticmethod
-    def setWhiteList(additions, deletions, restore=False):
+    def set_white_list(additions, deletions, restore=False):
         '''
             This Adds or deletes entries inside the whitelist
         '''
-        global whitelist
+        global WHITELIST
 
 
         if additions:
             for robot_name in additions:
-                whitelist[robot_name] = additions[robot_name]
+                WHITELIST[robot_name] = additions[robot_name]
 
         if deletions:
             for robot_name in deletions:
-                if robot_name in whitelist:
+                if robot_name in WHITELIST:
                     for topic in deletions[robot_name]["publisher"]:
-                        if topic in whitelist[robot_name]["publisher"]:
-                            whitelist[robot_name]["publisher"].remove(topic)
+                        if topic in WHITELIST[robot_name]["publisher"]:
+                            WHITELIST[robot_name]["publisher"].remove(topic)
                     for topic in deletions[robot_name]["subscriber"]:
-                        if topic in whitelist[robot_name]["subscriber"]:
-                            whitelist[robot_name]["subscriber"].remove(topic)
+                        if topic in WHITELIST[robot_name]["subscriber"]:
+                            WHITELIST[robot_name]["subscriber"].remove(topic)
 
         if restore:
-            whitelist = RosConfigurator.getWhiteList(restore=True)
+            WHITELIST = RosConfigurator.get_white_list(restore=True)

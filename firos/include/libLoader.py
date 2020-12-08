@@ -34,7 +34,7 @@ except ImportError:
 
 # Add genpy to sys.path (This is not written as a module)
 from genpy.generator import MsgGenerator
-from include.logger import Log
+from include.logger import log
 sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "/genpy/src/")
 
 regex = re.compile(u'^(.*)(\\b.msg\\b)(.*)$')
@@ -94,7 +94,7 @@ class LibLoader:
             return
 
         if "ROS_PACKAGE_PATH" not in os.environ:
-            Log("WARNING", "The ENV 'ROS_PACKAGE_PATH' is not set. Unable to search for Messages"
+            log("WARNING", "The ENV 'ROS_PACKAGE_PATH' is not set. Unable to search for Messages"
                 + " on this system")
 
 
@@ -133,10 +133,10 @@ class LibLoader:
 
 
     @staticmethod
-    def loadFromSystem(msgType, topic):
+    def load_from_system(msg_type, topic):
         ''' This actually tries all three methods mentioned above.
         '''
-        splits = msgType.split("/")
+        splits = msg_type.split("/")
 
         if len(splits) == 2:
             module_name = splits[0] # PACKAGE
@@ -149,27 +149,27 @@ class LibLoader:
                 clazz = getattr(module, module_msg)
                 return clazz
             except ImportError:
-                Log("WARNING", "Message {} was not found.".format(module_msg)
+                log("WARNING", "Message {} was not found.".format(module_msg)
                     + "Trying to load the Message-File in FIROS/msgs")
             except AttributeError:
-                Log("WARNING", "Message {} was not found.".format(module_msg)
+                log("WARNING", "Message {} was not found.".format(module_msg)
                     + "Trying to load the Message-File in FIROS/msgs")
 
 
 
             ##### 2: Try to load the Message given the Message-files inside FIROS/msgs
             current_path = os.path.dirname(os.path.abspath(__file__))
-            msgsFold = current_path + "/../../msgs/" # FIROS/msgs - Folder
-            search_path = LibLoader._init_search_path(msgsFold)
+            msgs_fold = current_path + "/../../msgs/" # FIROS/msgs - Folder
+            search_path = LibLoader._init_search_path(msgs_fold)
             search_path["namespace"] = module_name
             try:
                 # Disable Output, since genpy prints exceptions
                 sys.stdout = open(os.devnull, "w")
                 sys.stderr = open(os.devnull, "w")
                 retcode = MsgGenerator().generate_messages( module_name,
-                                                            [msgsFold + module_name + "/"
+                                                            [msgs_fold + module_name + "/"
                                                                 + module_msg + ".msg"],
-                                                            msgsFold + module_name, search_path)
+                                                            msgs_fold + module_name, search_path)
             except Exception:
                 # Case we got an Exception -> retcode = 1 -> Error
                 retcode = 1
@@ -180,14 +180,14 @@ class LibLoader:
                 sys.stderr = sys.__stderr__
 
             if retcode == 1:
-                Log("WARNING", "Could not load Message {}/{}.".format(module_name, module_msg)
+                log("WARNING", "Could not load Message {}/{}.".format(module_name, module_msg)
                     + "Maybe it references other missing Messages?")
             elif retcode == 0:
                 LibLoader.isGenerated = True
                 module = imp.load_source(module_msg,
-                                        msgsFold + module_name + "/_" + module_msg + ".py")
+                                        msgs_fold + module_name + "/_" + module_msg + ".py")
                 clazz = getattr(module, module_msg)
-                Log("INFO", "Message {}/{} succesfully loaded.".format(module_name, module_msg))
+                log("INFO", "Message {}/{} succesfully loaded.".format(module_name, module_msg))
                 return clazz
 
 
@@ -197,7 +197,7 @@ class LibLoader:
                 type_name = rostopic.get_topic_type(topic, blocking=False)[0]
                 if type_name:
                     clazz = roslib.message.get_message_class(type_name)
-                    Log("INFO", "Message {}/{}".format(module_name, module_msg)
+                    log("INFO", "Message {}/{}".format(module_name, module_msg)
                         + "loaded via roslib.message!")
                     return clazz
             except Exception:
@@ -205,5 +205,5 @@ class LibLoader:
 
 
         ### Message could not be loaded or the regex does not match
-        Log("ERROR", "Unable to load the Message: {} on this System.".format(msgType))
+        log("ERROR", "Unable to load the Message: {} on this System.".format(msg_type))
         exit()

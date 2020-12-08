@@ -28,7 +28,7 @@ except ImportError:
     # Python 2
     from BaseHTTPServer import HTTPServer
 
-from include.logger import Log
+from include.logger import log
 
 from include.server.requestHandler import RequestHandler
 
@@ -43,18 +43,18 @@ class FirosServer:
         self.port = port
         self.stopped = False
 
-        Protocol = "HTTP/1.0"
+        protocol = "HTTP/1.0"
 
         server_address = (self.address, self.port)
 
-        RequestHandler.protocol_version = Protocol
+        RequestHandler.protocol_version = protocol
         self.httpd = HTTPServer(server_address, RequestHandler)
 
     def start(self):
         ## \brief start FIROS http server
         # \param self
-        sa = self.httpd.socket.getsockname()
-        Log("INFO", "\nServing HTTP on", sa[0], "port", sa[1], "...")
+        sock_name = self.httpd.socket.getsockname()
+        log("INFO", "\nServing HTTP on", sock_name[0], "port", sock_name[1], "...")
         while not self.stopped:
             self.httpd.handle_request()
 

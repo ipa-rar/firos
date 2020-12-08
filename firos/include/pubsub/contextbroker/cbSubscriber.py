@@ -42,7 +42,7 @@ except ImportError:
     from BaseHTTPServer import HTTPServer
 
 from include.constants import Constants as C
-from include.logger import Log
+from include.logger import log
 from include.pubsub.genericPubSub import Subscriber
 from include.ros.topicHandler import RosTopicHandler
 from include.FiwareObjectConverter.objectFiwareConverter import ObjectFiwareConverter
@@ -74,15 +74,15 @@ class CbSubscriber(Subscriber):
             and setting up Configuration-Parameters
         '''
         # Do nothing if no Configuration is provided!
-        if self.configData is None:
-            Log("WARNING", "No Configuration for Context-Broker found!")
-            self.noConf = True
+        if self.config_data is None:
+            log("WARNING", "No Configuration for Context-Broker found!")
+            self.no_conf = True
             return
         else:
-            self.noConf = False
+            self.no_conf = False
 
         # Set Configuration
-        data = self.configData
+        data = self.config_data
 
         if data is not None and "address" not in data or "port" not in data:
             raise Exception("No Context-Broker specified!")
@@ -115,11 +115,11 @@ class CbSubscriber(Subscriber):
             )
 
         self.data = data
-        self.serverIsRunning = False
-        self.CB_BASE_URL = "http://{}:{}".format(data["address"], data["port"])
+        self.server_is_running = False
+        self.cb_base_url = "http://{}:{}".format(data["address"], data["port"])
 
-    def subscribe(self, topicList, topicTypes, msgDefintions):
-        ''' topicList: A list of topics
+    def subscribe(self, topic_list, topic_types, msgDefintions):
+        ''' topic_list: A list of topics
             msgDefintions: The Messages-Definitions from ROS
 
             This method only gets called once (or multiple times, if we get a reset!)! So we
@@ -148,26 +148,26 @@ class CbSubscriber(Subscriber):
 
         '''
         # Do nothing if no Configuratuion
-        if self.noConf:
+        if self.no_conf:
             return
 
         # Start the HTTPServer and wait until it is ready!
-        if not self.serverIsRunning:
+        if not self.server_is_running:
             server_ready = threading.Event()
             self.server = CBServer(server_ready)
             thread.start_new_thread(self.server.start, ())
-            self.serverIsRunning = True
+            self.server_is_running = True
             server_ready.wait()
 
         # If not already subscribed, start a new thread which handles the subscription
         # for each topic for an robot. And only If the topic list is not empty!
-        for topic in topicList:
+        for topic in topic_list:
             if topic not in self.subscriptionIds:
-                Log("INFO", "Subscribing on Context-Broker to topics: " +
-                    str(list(topicList)))
+                log("INFO", "Subscribing on Context-Broker to topics: " +
+                    str(list(topic_list)))
                 # Start Thread via subscription
                 thread.start_new_thread(
-                    self.subscribeThread, (topic, topicTypes, msgDefintions))
+                    self.subscribe_thread, (topic, topic_types, msgDefintions))
 
     def unsubscribe(self):
         '''
@@ -175,7 +175,7 @@ class CbSubscriber(Subscriber):
             and also stop the HTTP-Server
         '''
         # Do nothing if no Configuratuion
-        if self.noConf:
+        if self.no_conf:
             return
 
         # close HTTP-Server
@@ -184,14 +184,14 @@ class CbSubscriber(Subscriber):
         # Unsubscribe to all Topics
         for topic in self.subscriptionIds:
             response = requests.delete(
-                self.CB_BASE_URL + self.subscriptionIds[topic])
-            self._checkResponse(response, subID=self.subscriptionIds[topic])
+                self.cb_base_url + self.subscriptionIds[topic])
+            self._check_response(response, sub_id=self.subscriptionIds[topic])
 
     ####################################################
     ########## Helpful Classes and Methods #############
     ####################################################
 
-    def subscribeThread(self, topic, topicTypes, msgDefintions):
+    def subscribe_thread(self, topic, topic_types, msg_defintions):
         '''
             A Subscription-Thread. Its Life-Cycle is as follows:
             -> Subscribe -> Delete old Subs-ID -> Save new Subs-ID -> Wait ->
@@ -200,36 +200,36 @@ class CbSubscriber(Subscriber):
         '''
         while True:
             # Subscribe
-            jsonData = self.subscribeJSONGenerator(
-                topic, topicTypes, msgDefintions)
-            response = requests.post(self.CB_BASE_URL + "/v2/subscriptions",
-                                     data=jsonData,
+            json_data = self.subscribe_json_generator(
+                topic, topic_types, msg_defintions)
+            response = requests.post(self.cb_base_url + "/v2/subscriptions",
+                                     data=json_data,
                                      headers={'Content-Type': 'application/json'})
-            self._checkResponse(response, created=True, robTop=topic)
+            self._check_response(response, created=True, rob_top=topic)
 
             if 'Location' in response.headers:
                 # <- get subscription-ID
-                newSubID = response.headers['Location']
+                new_sub_id = response.headers['Location']
             else:
-                Log("WARNING",  "Firos was not able to subscribe to topic: {}".format(topic))
+                log("WARNING",  "Firos was not able to subscribe to topic: {}".format(topic))
 
             # Unsubscribe
             if topic in self.subscriptionIds:
                 response = requests.delete(
-                    self.CB_BASE_URL + self.subscriptionIds[topic])
-                self._checkResponse(
-                    response, subID=self.subscriptionIds[topic])
+                    self.cb_base_url + self.subscriptionIds[topic])
+                self._check_response(
+                    response, sub_id=self.subscriptionIds[topic])
 
             # Save new ID
-            self.subscriptionIds[topic] = newSubID
+            self.subscriptionIds[topic] = new_sub_id
 
             # Wait
             # sleep Length * Refresh-Rate (where 0 < Refresh-Rate < 1)
             time.sleep(int(self.data["subscription"]["subscription_length"] *
                            self.data["subscription"]["subscription_refresh_delay"]))
-            Log("INFO", "Refreshing Subscription for topic: " + str(topic))
+            log("INFO", "Refreshing Subscription for topic: " + str(topic))
 
-    def subscribeJSONGenerator(self, topic, topicTypes, msgDefintions):
+    def subscribe_json_generator(self, topic, topic_types, msg_defintions):
         '''
             This method returns the correct JSON-format to subscribe to the ContextBroker.
             The Expiration-Date/Throttle and Type of topics is retreived here via the
@@ -245,7 +245,7 @@ class CbSubscriber(Subscriber):
                     {
                         "id": str(topic).replace("/", "."),  # OCB Specific!!
                         # OCB Specific!!
-                        "type": topicTypes[topic].replace("/", "%2F")
+                        "type": topic_types[topic].replace("/", "%2F")
                     }
                 ]
             },
@@ -253,7 +253,7 @@ class CbSubscriber(Subscriber):
                 "http": {
                     "url": "http://{}:{}".format(C.EP_SERVER_ADRESS, self.server.port)
                 },
-                "attrs": list(msgDefintions[topic].keys())
+                "attrs": list(msg_defintions[topic].keys())
             },
             "expires": time.strftime("%Y-%m-%dT%H:%M:%S.00Z",
                                      time.gmtime(time.time() +
@@ -265,24 +265,24 @@ class CbSubscriber(Subscriber):
         }
         return json.dumps(struct)
 
-    def _checkResponse(self, response, robTop=None, subID=None, created=False):
+    def _check_response(self, response, rob_top=None, sub_id=None, created=False):
         '''
             If a not good response from ContextBroker is received, the error will be printed.
 
             response: The response from ContextBroker
-            robTop:   A string (topic), for the curretn robot/topic
-            subID:    The Subscription ID string, which should get deleted
+            rob_top:   A string (topic), for the curretn robot/topic
+            sub_id:    The Subscription ID string, which should get deleted
             created:  Creation or Deletion of a subscription (bool)
         '''
         if not response.ok:
             if created:
-                Log("ERROR", "Could not create subscription for topic {}".format(robTop)
+                log("ERROR", "Could not create subscription for topic {}".format(rob_top)
                     + " in Context-Broker :")
-                Log("ERROR", response.content)
+                log("ERROR", response.content)
             else:
-                Log("WARNING", "Could not delete subscription {}".format(subID)
+                log("WARNING", "Could not delete subscription {}".format(sub_id)
                     + " from Context-Broker :")
-                Log("WARNING", response.content)
+                log("WARNING", response.content)
 
 
 class CBServer:
@@ -300,14 +300,14 @@ class CBServer:
         self.stopped = False
         self.thread_event = thread_event
 
-        Protocol = "HTTP/1.0"
+        protocol = "HTTP/1.0"
 
         if C.EP_SERVER_PORT is not None and isinstance(C.EP_SERVER_PORT, int):
             server_address = ("0.0.0.0", C.EP_SERVER_PORT)
         else:
             server_address = ("0.0.0.0", 0)
 
-        self.CBHandler.protocol_version = Protocol
+        self.CBHandler.protocol_version = protocol
         self.httpd = HTTPServer(server_address, self.CBHandler)
 
     def start(self):
@@ -315,10 +315,10 @@ class CBServer:
             This start the HTTPServer and notifies thread_event
         '''
         # Get Port and HostName and save port
-        sa = self.httpd.socket.getsockname()
-        self.port = sa[1]
-        Log("INFO", "\nListening for Context-Broker-Messages on: ",
-            C.EP_SERVER_ADRESS, ":", sa[1])
+        sock_name = self.httpd.socket.getsockname()
+        self.port = sock_name[1]
+        log("INFO", "\nListening for Context-Broker-Messages on: ",
+            C.EP_SERVER_ADRESS, ":", sock_name[1])
 
         # Notify and start handling Requests
         self.thread_event.set()
@@ -336,20 +336,20 @@ class CBServer:
             because the ContextBroker sends Information about the
             subscriptions via HTTP. This Class just handles incoming
             Requests and converts the received Data into a "ROS-conform Message".
-            in """do_POST""" we invoke """RosTopicHandler.publish"""
+            in """do_post""" we invoke """RosTopicHandler.publish"""
         '''
 
         def log_message(self, format, *args):
             ''' Suppress prints! '''
             return
 
-        def do_GET(self):
+        def do_get(self):
             '''
                 We do not respond to GETs. We do Nothing!!
             '''
             pass
 
-        def do_POST(self):
+        def do_post(self):
             ''' The ContextBroker is informing us via one of our subscriptions.
                 We convert the received content back and publish
                 it in ROS.
@@ -359,33 +359,33 @@ class CBServer:
                 we invoke """RosTopicHandler.publish""" here!
             '''
             # retreive Data and get the updated information
-            recData = self.rfile.read(int(self.headers['Content-Length']))
-            receivedData = json.loads(recData)
-            data = receivedData['data'][0]  # Specific to NGSIv2
-            jsonData = json.dumps(data)
+            rec_data = self.rfile.read(int(self.headers['Content-Length']))
+            received_data = json.loads(rec_data)
+            data = received_data['data'][0]  # Specific to NGSIv2
+            json_data = json.dumps(data)
 
             obj = self.TypeValue()
-            ObjectFiwareConverter.fiware2Obj(jsonData, obj, setAttr=True, useMetaData=False, encoded=True)
+            ObjectFiwareConverter.fiware2Obj(json_data, obj, setAttr=True, useMetaData=False, encoded=True)
             obj.id = obj.id.replace(".", "/")
             obj.type = obj.type.replace("%2F", "/")
 
-            objType = obj.type
+            obj_type = obj.type
             topic = obj.id
 
             del data["id"]
             del data["type"]
-            tempDict = dict(type=objType, value=data)
+            temp_dict = dict(type=obj_type, value=data)
 
-            dataStruct = self._buildTypeStruct(tempDict)
+            data_struct = self._build_type_struct(temp_dict)
 
-            RosTopicHandler.publish(topic, obj.__dict__, dataStruct)
+            RosTopicHandler.publish(topic, obj.__dict__, data_struct)
             # # Send OK!
             self.send_response(204)
             self.end_headers()  # Python 3 needs an extra end_headers after send_response
 
         # Back Conversion From Entity-JSON into Python-Object
 
-        def _buildTypeStruct(self, obj):
+        def _build_type_struct(self, obj):
             ''' This generates a struct containing a type (the actual ROS-Message-Type) and
                 its value (either empty or more ROS-Message-Types).
 
@@ -394,13 +394,13 @@ class CBServer:
 
                 obj:    The received update from Context-Broker
             '''
-            s = {}
+            dict_ = {}
 
             # Searching for a point to get ROS-Message-Types from the obj
             if 'value' in obj and 'type' in obj and "/" in obj['type']:
-                s['type'] = obj['type']
+                dict_['type'] = obj['type']
                 objval = obj['value']
-                s['value'] = {}
+                dict_['value'] = {}
 
                 # For each value in Object repeat!
                 for k in objval:
@@ -409,14 +409,14 @@ class CBServer:
                         'value' in objval[k] and
                             objval[k]['type'] == 'array'):
 
-                        l = []
+                        list_ = []
                         for klist in objval[k]['value']:
-                            l.append(self._buildTypeStruct(klist))
-                        s['value'][k] = l
+                            list_.append(self._build_type_struct(klist))
+                        dict_['value'][k] = list_
                     else:
-                        s['value'][k] = self._buildTypeStruct(objval[k])
+                        dict_['value'][k] = self._build_type_struct(objval[k])
 
-            return s
+            return dict_
 
         class TypeValue(object):
             ''' A Stub-Object to parse the received data

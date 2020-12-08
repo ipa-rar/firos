@@ -45,10 +45,10 @@ from include.constants import Constants as C
 if __name__ == '__main__':
 
     # If launched via roslaunch, we get addtional parameters
-    rosLaunch_name = None
+    ROS_LAUNCH_NAME = None
     for i in range(len(sys.argv)):
         if "__name:=" in sys.argv[i]:
-            rosLaunch_name = sys.argv.pop(i)[8:]
+            ROS_LAUNCH_NAME = sys.argv.pop(i)[8:]
             break
     for i in range(len(sys.argv)):
         if "__log:=" in sys.argv[i]:
@@ -56,19 +56,18 @@ if __name__ == '__main__':
             sys.argv.pop(i)[7:]
             break
 
-
     # Input Parsing
     parser = argparse.ArgumentParser()
-    parser.add_argument('-P', action='store', dest='port', help='Set the Port of the Firos-Server')
+    parser.add_argument('-P', action='store', dest='port',
+                        help='Set the Port of the Firos-Server')
     parser.add_argument('--conf',   action='store', dest='conf_Fold',
-                                    help='Set the config-Folder for Firos')
+                        help='Set the config-Folder for Firos')
     parser.add_argument('--ros-port',   action='store', dest='ros_port',
-                                        help='Set the ROS-Port for Firos')
+                        help='Set the ROS-Port for Firos')
     parser.add_argument('--ros-node-name',  action='store', dest='ros_node_name',
-                                            help='Set the ROS-Node-Name')
+                        help='Set the ROS-Node-Name')
     parser.add_argument('--loglevel',   action='store', dest='loglevel',
-                                        help='Set the LogLevel (INFO, WARNING, ERROR,  CRITICAL)')
-
+                        help='Set the LogLevel (INFO, WARNING, ERROR,  CRITICAL)')
 
     # Get Input
     results = parser.parse_args()
@@ -77,7 +76,6 @@ if __name__ == '__main__':
     current_path = os.path.dirname(os.path.abspath(__file__))
     conf_path = current_path + "/../config"
 
-
     # Check if the CLI specified a config folder
     if results.conf_Fold is not None:
         conf_path = os.path.abspath(results.conf_Fold)
@@ -85,14 +83,13 @@ if __name__ == '__main__':
     # Initialize global variables (Constants.py)
     C.init(conf_path)
 
-
     # Importing firos specific scripts
     from include import confManager
-    from include.logger import Log, initLog
+    from include.logger import log, init_log
     from include.server.firosServer import FirosServer
 
-    from include.ros.topicHandler import (RosTopicHandler, loadMsgHandlers, initPubAndSub,
-                                            createConnectionListeners)
+    from include.ros.topicHandler import (RosTopicHandler, load_msg_handlers, init_pub_and_sub,
+                                          create_connection_listeners)
 
     # Overwrite global variables with command line arguments (iff set)
     if results.port is not None:
@@ -101,22 +98,19 @@ if __name__ == '__main__':
     if results.ros_port is not None:
         C.ROSBRIDGE_PORT = int(results.ros_port)
 
-    if rosLaunch_name is not None:
-        C.ROS_NODE_NAME = rosLaunch_name
+    if ROS_LAUNCH_NAME is not None:
+        C.ROS_NODE_NAME = ROS_LAUNCH_NAME
     elif results.ros_node_name is not None:
         C.ROS_NODE_NAME = results.ros_node_name
 
     if results.loglevel is not None:
         C.LOGLEVEL = results.loglevel
 
-
     # Starting Up!
-    initLog()
-    Log("INFO", "Initializing ROS node: " + C.ROS_NODE_NAME)
+    init_log()
+    log("INFO", "Initializing ROS node: " + C.ROS_NODE_NAME)
     rospy.init_node(C.ROS_NODE_NAME)
-    Log("INFO", "Initialized")
-
-
+    log("INFO", "Initialized")
 
     try:
         server = FirosServer("0.0.0.0", C.MAP_SERVER_PORT)
@@ -124,21 +118,21 @@ if __name__ == '__main__':
         raise Exception("Unable to create a FirosServer")
     else:
         def signal_handler(signal, frame):
-            Log("INFO", ('\nExiting from the application'))
-            RosTopicHandler.unregisterAll()
+            log("INFO", ('\nExiting from the application'))
+            RosTopicHandler.unregister_all()
             server.close()
-            Log("INFO", ('\nExit'))
+            log("INFO", ('\nExit'))
             sys.exit(0)
         signal.signal(signal.SIGINT, signal_handler)
         signal.signal(signal.SIGTERM, signal_handler)
 
-        Log("INFO", "\nStarting Firos...")
-        Log("INFO", "---------------------------------\n")
+        log("INFO", "\nStarting Firos...")
+        log("INFO", "---------------------------------\n")
 
         # Topic Handler Routine:
-        initPubAndSub()
-        loadMsgHandlers(confManager.getRobots(True))
-        createConnectionListeners()
+        init_pub_and_sub()
+        load_msg_handlers(confManager.get_robots(True))
+        create_connection_listeners()
 
-        Log("INFO", "\nPress Ctrl+C to Exit\n")
+        log("INFO", "\nPress Ctrl+C to Exit\n")
         server.start()
