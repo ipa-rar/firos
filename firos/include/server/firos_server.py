@@ -30,7 +30,7 @@ except ImportError:
 
 from include.logger import log
 
-from include.server.requestHandler import RequestHandler
+from include.server.request_handler import RequestHandler
 
 
 class FirosServer:

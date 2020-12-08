@@ -53,12 +53,12 @@ retrieved easily and is described further below.
 ## Writing the first Publisher
 
 In this case a Publisher is a class, which publishes received data from the ROS-WORLD and converts and delegates it into
-the Non-ROS-World (your custom Standard). The file `genericPubSub.py` contains an abstract class `Publisher` which you
+the Non-ROS-World (your custom Standard). The file `generic_pub_sub.py` contains an abstract class `Publisher` which you
 just need to inherit from. Create a Python-file in your newly created folder (you can name it as you like) and add the
 following content:
 
 ```python
-from include.pubsub.genericPubSub import Publisher
+from include.pubsub.generic_pub_sub import Publisher
 
 class SomeExamplePublisher(Publisher):
 
@@ -88,8 +88,8 @@ The Subscriber does the opposite of a Publisher. It receives Messages from the N
 into the ROS-World. Similar to the Publisher you also need to implement the abstract class `Subscriber` as follows:
 
 ```python
-from include.pubsub.genericPubSub import Subscriber
-from include.ros.topicHandler import RosTopicHandler
+from include.pubsub.generic_pub_sub import Subscriber
+from include.ros.topic_handler import RosTopicHandler
 
 class SomeExampleSubscriber(Subscriber):
 

@@ -1,4 +1,4 @@
-from include.pubsub.genericPubSub import Publisher
+from include.pubsub.generic_pub_sub import Publisher
 
 
 class SomeExamplePublisher(Publisher):

@@ -31,11 +31,11 @@ import rospy
 
 from include.logger import log
 from include.constants import Constants as C
-from include.libLoader import LibLoader
-from include import confManager
+from include.lib_loader import LibLoader
+from include import conf_manager
 
 # PubSub Handlers
-from include.pubsub.genericPubSub import PubSub
+from include.pubsub.generic_pub_sub import PubSub
 
 # this Message is needed, for the Listeners on connect on disconnect
 import std_msgs.msg
@@ -312,4 +312,4 @@ def _robot_connection(data):
     '''
     robot_name = data.data
     log("INFO", "Connected robot: " + robot_name)
-    load_msg_handlers(confManager.get_robots(True))
+    load_msg_handlers(conf_manager.get_robots(True))

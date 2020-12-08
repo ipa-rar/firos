@@ -26,7 +26,7 @@ import copy
 import traceback
 
 from include.logger import log
-from include.ros.rosConfigurator import RosConfigurator
+from include.ros.ros_configurator import RosConfigurator
 from include.constants import Constants as C
 
 

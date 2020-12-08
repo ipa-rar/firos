@@ -43,8 +43,8 @@ except ImportError:
 
 from include.constants import Constants as C
 from include.logger import log
-from include.pubsub.genericPubSub import Subscriber
-from include.ros.topicHandler import RosTopicHandler
+from include.pubsub.generic_pub_sub import Subscriber
+from include.ros.topic_handler import RosTopicHandler
 from include.FiwareObjectConverter.objectFiwareConverter import ObjectFiwareConverter
 
 

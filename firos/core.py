@@ -84,11 +84,11 @@ if __name__ == '__main__':
     C.init(conf_path)
 
     # Importing firos specific scripts
-    from include import confManager
+    from include import conf_manager
     from include.logger import log, init_log
-    from include.server.firosServer import FirosServer
+    from include.server.firos_server import FirosServer
 
-    from include.ros.topicHandler import (RosTopicHandler, load_msg_handlers, init_pub_and_sub,
+    from include.ros.topic_handler import (RosTopicHandler, load_msg_handlers, init_pub_and_sub,
                                           create_connection_listeners)
 
     # Overwrite global variables with command line arguments (iff set)
@@ -131,7 +131,7 @@ if __name__ == '__main__':
 
         # Topic Handler Routine:
         init_pub_and_sub()
-        load_msg_handlers(confManager.get_robots(True))
+        load_msg_handlers(conf_manager.get_robots(True))
         create_connection_listeners()
 
         log("INFO", "\nPress Ctrl+C to Exit\n")

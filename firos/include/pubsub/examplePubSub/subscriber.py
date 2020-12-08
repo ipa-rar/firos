@@ -1,5 +1,5 @@
-from include.pubsub.genericPubSub import Subscriber
-from include.ros.topicHandler import RosTopicHandler
+from include.pubsub.generic_pub_sub import Subscriber
+from include.ros.topic_handler import RosTopicHandler
 
 
 class SomeExampleSubscriber(Subscriber):

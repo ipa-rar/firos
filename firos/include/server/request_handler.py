@@ -41,9 +41,9 @@ except ImportError:
     IS_PYTHON_3 = False
 
 from include.logger import log
-from include.confManager import get_robots
-from include.ros.rosConfigurator import RosConfigurator
-from include.ros.topicHandler import (load_msg_handlers, ROS_PUBLISHER,
+from include.conf_manager import get_robots
+from include.ros.ros_configurator import RosConfigurator
+from include.ros.topic_handler import (load_msg_handlers, ROS_PUBLISHER,
                                         ROS_SUBSCRIBER, ROS_TOPIC_AS_DICT,
                                         ROS_SUBSCRIBER_LAST_MESSAGE)
 from include.FiwareObjectConverter.objectFiwareConverter import ObjectFiwareConverter
@@ -111,7 +111,7 @@ def get_action(path, method):
 ###############################################################################
 
 def list_topics(request, action):
-    ''' Generates a list of all topics (depending on RosConfigurator, confManager)
+    ''' Generates a list of all topics (depending on RosConfigurator, conf_manager)
         and returns them back as json
     '''
     robots = get_robots(False)
