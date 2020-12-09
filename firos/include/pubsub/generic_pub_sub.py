@@ -103,9 +103,9 @@ class PubSub(object):
 
         ### Get all subfolders (only 1 deeper)
         subfolders = {}
-        for folder in folder_info:
-            if not folder.startswith("_") and os.path.isdir(folder + os.path.sep + folder):
-                subfolders[folder] = {}
+        for folder_i in folder_info:
+            if not folder_i.startswith("_") and os.path.isdir(folder + os.path.sep + folder_i):
+                subfolders[folder_i] = {}
 
         ### Get all Files inside those subfolders
         for i in subfolders.keys():
