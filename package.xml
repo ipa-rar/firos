@@ -17,13 +17,17 @@
 
   <build_depend>rospy</build_depend>
   <build_depend>std_msgs</build_depend>
+  <build_depend>move_base_msgs</build_depend>
   <build_depend>message_generation</build_depend>
+  <build_depend>actionlib</build_depend>
 
   <exec_depend>requests</exec_depend>
   <exec_depend>rospy</exec_depend>
   <exec_depend>std_msgs</exec_depend>
   <exec_depend>dynamic_reconfigure</exec_depend>
   <exec_depend>message_runtime</exec_depend>
+  <exec_depend>actionlib</exec_depend>
+  <exec_depend>move_base_msgs</exec_depend>
 
   <doc_depend>mkdocs</doc_depend>
 </package>

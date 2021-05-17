@@ -42,5 +42,9 @@ services:
     ports: 
       - "11311:11311"
 
+networks:
+  finet:
+    name: finet
+
       
 version: "3"

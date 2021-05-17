@@ -6,6 +6,8 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   std_msgs
+  move_base_msgs
+  actionlib
   message_generation
 )
 
