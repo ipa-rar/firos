@@ -4,3 +4,6 @@
 [submodule "firos/include/genpy"]
 	path = firos/include/genpy
 	url = https://github.com/ros/genpy.git
+[submodule "firos/include/pubsub/Lidar_Publisher"]
+	path = firos/include/pubsub/Lidar_Publisher
+	url = https://github.com/ipa-rar/Lidar_Publisher.git
