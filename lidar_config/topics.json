@@ -1,0 +1,3 @@
+{
+    "/scan": ["sensor_msgs/LaserScan", "publisher"]
+}
