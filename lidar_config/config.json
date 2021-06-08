@@ -1,13 +1,12 @@
 {
-  "environment": "local",
-  "local": {
-      "server": {
-          "port": 10100
-      },
-      "contextbroker": {
-          "address": "localhost",
-          "port": 1026
-      },
-      "log_level": "INFO"
-  }
+    "environment": "local",
+    "local": {
+        "server": {
+            "port": 10100
+        },
+        "contextbroker": {
+            "address": "localhost",
+            "port": 1026
+        }
+    }
 }

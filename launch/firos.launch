@@ -1,5 +1,5 @@
 <launch>
-  <arg name="some_path" default="$(find firos)/config" />
+  <arg name="some_path" default="$(find firos)/lidar_config" />
 
   <arg name="node_name" default="firos" />
 
