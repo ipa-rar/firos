@@ -1,50 +1,48 @@
-services: 
-  firos: 
-    build: 
+version: "3"
+services:
+  firos:
+    build:
       context: ".."
       dockerfile: docker/Dockerfile
     container_name: firos
-    depends_on: 
+    depends_on:
       - orion
       - rosmaster
-    environment: 
+    environment:
       - PYTHONUNBUFFERED=1
       - "ROS_MASTER_URI=http://rosmaster:11311"
     image: "firos:localbuild"
-    ports: 
+    ports:
       - "10100:10100"
-    volumes: 
-      - "./docker-config/robots.json:/catkin_ws/src/firos/config/robots.json"
+    volumes:
+      - "./docker-config/topics.json:/catkin_ws/src/firos/config/topics.json"
       - "./docker-config/whitelist.json:/catkin_ws/src/firos/config/whitelist.json"
       - "./docker-config/config.json:/catkin_ws/src/firos/config/config.json"
 
-  mongo: 
+  mongo:
     command: "--nojournal"
     container_name: mongo
-    image: "mongo:3.4"
+    image: "mongo:4.4"
 
-  orion: 
+  orion:
     command: "-dbhost mongo"
     container_name: orion
     hostname: orion
     image: fiware/orion
-    links: 
+    links:
       - mongo
-    ports: 
+    ports:
       - "1026:1026"
 
-  rosmaster: 
-    command: 
+  rosmaster:
+    command:
       - roscore
     container_name: rosmaster
     hostname: rosmaster
     image: "ros:melodic-ros-core"
-    ports: 
+    ports:
       - "11311:11311"
 
 networks:
   finet:
-    name: finet
-
-      
-version: "3"
+    driver: bridge

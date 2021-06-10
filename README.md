@@ -41,6 +41,30 @@ This project is part of [FIWARE](https://www.fiware.org/). For more information 
 
 ## Install
 
+After you have set up ROS and created a catkin-workspace you can finally clone this repository, install its dependencies
+and create the FIROS-Node as follows:
+
+```shell
+# Clone Repository
+cd "catkin_workspace_base_directory"/src
+git clone --recursive https://github.com/ipa-rar/firos.git
+cd "catkin_workspace_base_directory"/src/firos
+
+# Install Dependencies
+pip install -r requirements.txt
+
+# Make Node
+cd "catkin_workspace_base_directory"
+catkin_make
+```
+
+**Note**:
+
+-   FIROS uses git submodules (which is required to run properly). Newer versions of git can clone submodules via the
+    `--recursive` option
+-   Also check whether your local submodule-folder (currently in `firos/include/FiwareObjectConverter` and
+    `firos/include/genpy`) contains files to be sure that everything was cloned.
+
 Refer to the Installation-Guide [here](doc/install/install.md)
 
 ## Usage
