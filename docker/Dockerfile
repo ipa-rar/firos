@@ -9,11 +9,15 @@ RUN mkdir catkin_ws \
 COPY . /catkin_ws/src/firos
 WORKDIR /catkin_ws
 
-# install ros packages
-RUN apt-get update && apt-get install -y ros-melodic-ros-base python python-pip
-RUN pip install -r /catkin_ws/src/firos/requirements.txt
-RUN /bin/bash -c '. /opt/ros/melodic/setup.bash; catkin_make'
+# install ros packages and dependencies
+RUN apt-get update && apt-get install -y ros-melodic-ros-base python python-pip 
+RUN apt install ros-melodic-tf2-msgs
+RUN apt install ros-melodic-geometry-msgs
+RUN apt install ros-melodic-sensor-msgs
 
+RUN pip install -r  /catkin_ws/src/firos/requirements.txt
+
+RUN /bin/bash -c '. /opt/ros/melodic/setup.bash; catkin_make'
 
 EXPOSE 10100
 CMD /bin/bash -c '. /opt/ros/melodic/setup.bash; . /catkin_ws/devel/setup.bash; rosrun firos core.py'

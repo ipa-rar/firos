@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # MIT License
 #
@@ -26,6 +26,7 @@
 # logwarn
 
 # Import required Python code.
+
 import json
 import os
 import sys
@@ -34,6 +35,7 @@ import rospy
 import signal
 import argparse
 
+sys.path.append("/include")
 from include.constants import Constants as C
 
 
