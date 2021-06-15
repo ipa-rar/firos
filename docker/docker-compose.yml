@@ -15,9 +15,9 @@ services:
     ports:
       - "10100:10100"
     volumes:
-      - "./docker-config/topics.json:/catkin_ws/src/firos/config/topics.json"
-      - "./docker-config/whitelist.json:/catkin_ws/src/firos/config/whitelist.json"
-      - "./docker-config/config.json:/catkin_ws/src/firos/config/config.json"
+      - "./docker-config/topics.json:/catkin_ws/src/betterfactory_lidar_firos/firos/config/topics.json"
+      - "./docker-config/whitelist.json:/catkin_ws/src/betterfactory_lidar_firos/firos/config/whitelist.json"
+      - "./docker-config/config.json:/catkin_ws/src/betterfactory_lidar_firos/firos/config/config.json"
 
   mongo:
     command: "--nojournal"
@@ -45,4 +45,5 @@ services:
 
 networks:
   finet:
+    name: finet
     driver: bridge
