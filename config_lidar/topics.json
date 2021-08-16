@@ -1,0 +1,6 @@
+{
+    "/node_1/scan": ["sensor_msgs/LaserScan", "subscriber"],
+    "/node_2/scan": ["sensor_msgs/LaserScan", "subscriber"],
+    "/node_3/scan": ["sensor_msgs/LaserScan", "subscriber"],
+    "/tf": ["tf2_msgs/TFMessage", "subscriber"]
+}
